@@ -1,19 +1,15 @@
 package me.wonwoo.hello;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
+import javax.persistence.*;
 
 @Entity
 public class Accounts {
-
 	@Id
 	@GeneratedValue
 	private Long id;
 	private String name;
 
 	public Accounts() {
-
 	}
 
 	public Long getId() {

@@ -16,4 +16,8 @@ public class AccountsService {
 	public Accounts getAccounts(Long id) {
 		return accountRepository.findOne(id);
 	}
+
+	public Accounts getAccountsQueryDsl(Long id) {
+		return accountRepository.findOne(QAccounts.accounts.id.eq(id));
+	}
 }

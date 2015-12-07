@@ -62,8 +62,23 @@ public class HelloControllerTest {
 		ResultActions getResult = mockMvc.perform(get("/accounts/" + resultAccounts.getId()).contentType(MediaType.APPLICATION_JSON));
 		getResult.andDo(print());
 		getResult.andExpect(status().isOk());
-
 		getResult.andExpect(jsonPath("$.name", is("wonwoo")));
 
+	}
+	
+	@Test
+	public void createAccountDslTest() throws Exception {
+		Accounts accounts = new Accounts();
+		accounts.setName("wonwoo");
+		ResultActions createResult = mockMvc.perform(post("/accounts").contentType(MediaType.APPLICATION_JSON).content(objectMapper.writeValueAsString(accounts)));
+		createResult.andDo(print());
+		createResult.andExpect(status().isOk());
+		String respones = createResult.andReturn().getResponse().getContentAsString();
+		Accounts resultAccounts = objectMapper.readValue(respones, Accounts.class);
+		ResultActions getResult = mockMvc.perform(get("/accountsdsl/" + resultAccounts.getId()).contentType(MediaType.APPLICATION_JSON));
+		getResult.andDo(print());
+		getResult.andExpect(status().isOk());
+		getResult.andExpect(jsonPath("$.name", is("wonwoo")));
+		
 	}
 }

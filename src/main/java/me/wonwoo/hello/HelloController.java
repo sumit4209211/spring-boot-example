@@ -32,6 +32,12 @@ public class HelloController {
 		return new ResponseEntity<Accounts>(saveAccounts, HttpStatus.OK);
 	}
 
+	@RequestMapping(value = "/accountsdsl/{id}", method = RequestMethod.GET)
+	public ResponseEntity<?> getAccountsQueryDsl(@PathVariable Long id) {
+		Accounts saveAccounts = service.getAccountsQueryDsl(id);
+		return new ResponseEntity<Accounts>(saveAccounts, HttpStatus.OK);
+	}
+
 	@RequestMapping(value = "/accounts", method = RequestMethod.POST)
 	public ResponseEntity<?> saveAccounts(@RequestBody Accounts accounts) {
 		Accounts saveAccounts = service.saveAccounts(accounts);
