@@ -1,0 +1,17 @@
+my:
+   servers:
+       - dev.bar.com
+       - foo.bar.com
+
+connection:
+   username: admin
+   remoteAddress: 192.168.1.1
+
+logging.level.org.springframework.web: DEBUG
+logging.level.me.wonwoo: DEBUG
+logging.level.org.hibernate: DEBUG
+
+spring.jpa.properties.hibernate.dialect: org.hibernate.dialect.MySQL5Dialect
+
+#spring.jpa.properties.hibernate.dialect: org.hibernate.dialect.Oracle10gDialect
+

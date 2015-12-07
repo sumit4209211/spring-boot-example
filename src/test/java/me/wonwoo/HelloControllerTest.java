@@ -6,6 +6,8 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
+import me.wonwoo.config.ConnectionSettings;
 import me.wonwoo.hello.Accounts;
 
 import org.junit.Before;
@@ -39,6 +41,16 @@ public class HelloControllerTest {
 	@Before
 	public void setUp() {
 		mockMvc = MockMvcBuilders.webAppContextSetup(wac).build();
+	}
+
+	@Autowired
+	private ConnectionSettings connectionSettings;
+
+	@Test
+	public void connectionTest(){
+		System.out.println(connectionSettings.getUsername());
+		System.out.println(connectionSettings.getRemoteAddress());
+
 	}
 
 	@Test
@@ -79,6 +91,29 @@ public class HelloControllerTest {
 		getResult.andDo(print());
 		getResult.andExpect(status().isOk());
 		getResult.andExpect(jsonPath("$.name", is("wonwoo")));
-		
+	}
+
+	@Test
+	public void createAccountsTest() throws Exception {
+		Accounts accounts = new Accounts();
+		accounts.setName("wonwoo");
+		ResultActions createResult = mockMvc.perform(post("/accounts").contentType(MediaType.APPLICATION_JSON).content(objectMapper.writeValueAsString(accounts)));
+		createResult.andDo(print());
+		createResult.andExpect(status().isOk());
+
+		Accounts accounts2 = new Accounts();
+		accounts2.setName("young gin");
+		ResultActions createResult2 = mockMvc.perform(post("/accounts").contentType(MediaType.APPLICATION_JSON).content(objectMapper.writeValueAsString(accounts2)));
+		createResult2.andDo(print());
+		createResult2.andExpect(status().isOk());
+
+
+		String respones = createResult.andReturn().getResponse().getContentAsString();
+		Accounts resultAccounts = objectMapper.readValue(respones, Accounts.class);
+		ResultActions getResult = mockMvc.perform(get("/accounts").contentType(MediaType.APPLICATION_JSON));
+		getResult.andDo(print());
+		getResult.andExpect(status().isOk());
+
+
 	}
 }

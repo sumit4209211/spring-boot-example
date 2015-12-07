@@ -1,26 +1,19 @@
 package me.wonwoo.hello;
 
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
 import javax.persistence.*;
 
 @Entity
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
 public class Accounts {
+
 	@Id
 	@GeneratedValue
 	private Long id;
 	private String name;
-
-	public Accounts() {
-	}
-
-	public Long getId() {
-		return id;
-	}
-
-	public String getName() {
-		return name;
-	}
-
-	public void setName(String name) {
-		this.name = name;
-	}
 }
