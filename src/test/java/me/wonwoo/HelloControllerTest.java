@@ -45,6 +45,6 @@ public class HelloControllerTest {
 		result.andDo(print());
 		result.andExpect(status().isOk());
 		result.andExpect(jsonPath("$.id", is("wonwoo")));
-
+		System.out.println("git test");
 	}
 }
