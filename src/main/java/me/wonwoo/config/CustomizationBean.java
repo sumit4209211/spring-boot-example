@@ -2,6 +2,7 @@ package me.wonwoo.config;
 
 import org.springframework.boot.context.embedded.ConfigurableEmbeddedServletContainer;
 import org.springframework.boot.context.embedded.EmbeddedServletContainerCustomizer;
+import org.springframework.stereotype.Component;
 
 /**
  * 톰캣 포트 변경
@@ -9,6 +10,7 @@ import org.springframework.boot.context.embedded.EmbeddedServletContainerCustomi
  * @author wonwoo
  *
  */
+//@Component
 public class CustomizationBean implements EmbeddedServletContainerCustomizer {
 
 	public void customize(ConfigurableEmbeddedServletContainer container) {
