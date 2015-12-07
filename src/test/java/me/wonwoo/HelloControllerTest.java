@@ -2,9 +2,11 @@ package me.wonwoo;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import me.wonwoo.hello.Accounts;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -45,6 +47,23 @@ public class HelloControllerTest {
 		result.andDo(print());
 		result.andExpect(status().isOk());
 		result.andExpect(jsonPath("$.id", is("wonwoo")));
-//		System.out.println("git test");
+		// System.out.println("git test");
+	}
+
+	@Test
+	public void createAccountTest() throws Exception {
+		Accounts accounts = new Accounts();
+		accounts.setName("wonwoo");
+		ResultActions createResult = mockMvc.perform(post("/accounts").contentType(MediaType.APPLICATION_JSON).content(objectMapper.writeValueAsString(accounts)));
+		createResult.andDo(print());
+		createResult.andExpect(status().isOk());
+		String respones = createResult.andReturn().getResponse().getContentAsString();
+		Accounts resultAccounts = objectMapper.readValue(respones, Accounts.class);
+		ResultActions getResult = mockMvc.perform(get("/accounts/" + resultAccounts.getId()).contentType(MediaType.APPLICATION_JSON));
+		getResult.andDo(print());
+		getResult.andExpect(status().isOk());
+
+		getResult.andExpect(jsonPath("$.name", is("wonwoo")));
+
 	}
 }
