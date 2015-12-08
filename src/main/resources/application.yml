@@ -15,3 +15,6 @@ spring.jpa.properties.hibernate.dialect: org.hibernate.dialect.MySQL5Dialect
 
 #spring.jpa.properties.hibernate.dialect: org.hibernate.dialect.Oracle10gDialect
 
+
+spring.redis.host: aoruqjfu.fun25.co.kr
+spring.redis.port: 18808
