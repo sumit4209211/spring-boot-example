@@ -16,4 +16,5 @@ public class Accounts {
 	@GeneratedValue
 	private Long id;
 	private String name;
+	private String password;
 }

@@ -30,24 +30,6 @@ public class AccountsController {
 	@Autowired
 	private Config config;
 
-	@RequestMapping(value = "/accounts/{id}", method = RequestMethod.GET)
-	public ResponseEntity<?> getAccount(@PathVariable Long id) {
-		Accounts saveAccounts = service.getAccount(id);
-		return new ResponseEntity<>(saveAccounts, HttpStatus.OK);
-	}
-
-
-	@RequestMapping(value = "/accounts", method = RequestMethod.GET)
-	public ResponseEntity<?> getAccounts(Pageable pageable) {
-		Page<Accounts> accounts = service.getAccounts(pageable);
-		return new ResponseEntity<>(accounts, HttpStatus.OK);
-	}
-
-	@RequestMapping(value = "/accountsdsl/{id}", method = RequestMethod.GET)
-	public ResponseEntity<?> getAccountsQueryDsl(@PathVariable Long id) {
-		Accounts saveAccounts = service.getAccountQueryDsl(id);
-		return new ResponseEntity<>(saveAccounts, HttpStatus.OK);
-	}
 	@RequestMapping(value = "/accounts", method = RequestMethod.POST)
 	public ResponseEntity<?> saveAccounts(@RequestBody Accounts accounts) {
 		Accounts saveAccounts = service.saveAccounts(accounts);
@@ -56,5 +38,29 @@ public class AccountsController {
 		return new ResponseEntity<>(saveAccounts, HttpStatus.OK);
 	}
 
-	//TODO 데이터베이스 방언 (dialect) 셋팅 공부
+	@RequestMapping(value = "/accounts/{id}", method = RequestMethod.GET)
+	public ResponseEntity<?> getAccount(@PathVariable Long id) {
+		Accounts saveAccounts = service.getAccount(id);
+		return new ResponseEntity<>(saveAccounts, HttpStatus.OK);
+	}
+
+	@RequestMapping(value = "/accounts", method = RequestMethod.GET)
+	public ResponseEntity<?> getAccounts(Pageable pageable) {
+		Page<Accounts> accounts = service.getAccounts(pageable);
+		return new ResponseEntity<>(accounts, HttpStatus.OK);
+	}
+
+	@RequestMapping(value = "/accounts/{id}", method = RequestMethod.PUT)
+	public ResponseEntity<?> updateAccounts(@PathVariable Long id, @RequestBody Accounts accounts) {
+		Accounts updateAccounts = service.updateAccounts(id, accounts);
+		return new ResponseEntity<>(updateAccounts, HttpStatus.OK);
+	}
+
+	@RequestMapping(value = "/accountsdsl/{id}", method = RequestMethod.GET)
+	public ResponseEntity<?> getAccountsQueryDsl(@PathVariable Long id) {
+		Accounts saveAccounts = service.getAccountQueryDsl(id);
+		return new ResponseEntity<>(saveAccounts, HttpStatus.OK);
+	}
+
+	// TODO 데이터베이스 방언 (dialect) 셋팅 공부
 }

@@ -1,8 +1,7 @@
 package me.wonwoo;
 
 import static org.hamcrest.CoreMatchers.is;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -48,39 +47,29 @@ public class HelloControllerTest {
 	private ConnectionSettings connectionSettings;
 
 	@Test
-	public void connectionTest(){
+	public void connectionTest() {
 		System.out.println(connectionSettings.getUsername());
 		System.out.println(connectionSettings.getRemoteAddress());
 
 	}
 
 	@Test
-	public void test() throws Exception {
-		ResultActions result = mockMvc.perform(get("/helloWorld").contentType(MediaType.APPLICATION_JSON));
-		result.andDo(print());
-		result.andExpect(status().isOk());
-		result.andExpect(jsonPath("$.id", is("wonwoo")));
-		// System.out.println("git test");
-	}
-
-	@Test
 	public void createAccountTest() throws Exception {
 		Accounts accounts = new Accounts();
 		accounts.setName("wonwoo");
+		accounts.setPassword("wonwoo123");
 		ResultActions createResult = createAccount(accounts);
 		String respones = createResult.andReturn().getResponse().getContentAsString();
 		Accounts resultAccounts = objectMapper.readValue(respones, Accounts.class);
-		ResultActions getResult = mockMvc.perform(get("/accounts/" + resultAccounts.getId()).contentType(MediaType.APPLICATION_JSON));
-		getResult.andDo(print());
-		getResult.andExpect(status().isOk());
+		ResultActions getResult = getAccount(resultAccounts.getId());
 		getResult.andExpect(jsonPath("$.name", is("wonwoo")));
-
 	}
-	
+
 	@Test
 	public void createAccountDslTest() throws Exception {
 		Accounts accounts = new Accounts();
 		accounts.setName("wonwoo");
+		accounts.setPassword("wonwoo123");
 		ResultActions createResult = createAccount(accounts);
 		String respones = createResult.andReturn().getResponse().getContentAsString();
 		Accounts resultAccounts = objectMapper.readValue(respones, Accounts.class);
@@ -94,24 +83,51 @@ public class HelloControllerTest {
 	public void createAccountsTest() throws Exception {
 		Accounts accounts = new Accounts();
 		accounts.setName("wonwoo");
+		accounts.setPassword("wonwoo123");
 		ResultActions createResult = createAccount(accounts);
 
 		Accounts accounts2 = new Accounts();
-		accounts2.setName("young gin");
+		accounts2.setName("young boss");
+		accounts2.setPassword("young boss123");
 		ResultActions createResult2 = createAccount(accounts2);
 
-		String respones = createResult.andReturn().getResponse().getContentAsString();
-		Accounts resultAccounts = objectMapper.readValue(respones, Accounts.class);
 		ResultActions getResult = mockMvc.perform(get("/accounts").contentType(MediaType.APPLICATION_JSON));
 		getResult.andDo(print());
 		getResult.andExpect(status().isOk());
 
 	}
-	
-	private ResultActions createAccount(Accounts accounts) throws Exception{
+
+	@Test
+	public void updateAccountsTest() throws Exception {
+		Accounts accounts = new Accounts();
+		accounts.setName("wonwoo");
+		accounts.setPassword("wonwoo123");
+		ResultActions createResult = createAccount(accounts);
+		String respones = createResult.andReturn().getResponse().getContentAsString();
+		Accounts resultAccounts = objectMapper.readValue(respones, Accounts.class);
+
+		resultAccounts.setName("update wonwoo");
+
+		ResultActions updateResult = mockMvc.perform(put("/accounts/" + resultAccounts.getId()).contentType(MediaType.APPLICATION_JSON).content(objectMapper.writeValueAsString(resultAccounts)));
+		updateResult.andDo(print());
+		updateResult.andExpect(status().isOk());
+		ResultActions getResult = getAccount(resultAccounts.getId());
+		getResult.andExpect(jsonPath("$.name", is("update wonwoo")));
+
+	}
+
+	private ResultActions createAccount(Accounts accounts) throws Exception {
 		ResultActions createResult = mockMvc.perform(post("/accounts").contentType(MediaType.APPLICATION_JSON).content(objectMapper.writeValueAsString(accounts)));
 		createResult.andDo(print());
 		createResult.andExpect(status().isOk());
 		return createResult;
 	}
+
+	private ResultActions getAccount(Long id) throws Exception {
+		ResultActions getResult = mockMvc.perform(get("/accounts/" + id).contentType(MediaType.APPLICATION_JSON));
+		getResult.andDo(print());
+		getResult.andExpect(status().isOk());
+		return getResult;
+	}
+
 }

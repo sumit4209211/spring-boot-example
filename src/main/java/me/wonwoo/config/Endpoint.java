@@ -5,11 +5,11 @@ import javax.ws.rs.Path;
 
 import org.springframework.stereotype.Component;
 
-@Component
-@Path("/hello")
+//@Component
+//@Path("/hello")
 public class Endpoint {
 
-	@GET
+//	@GET
 	public String message() {
 		return "Hello";
 	}
