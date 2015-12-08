@@ -1,6 +1,7 @@
 package me.wonwoo;
 
 import java.util.concurrent.TimeUnit;
+import java.util.function.Function;
 
 import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
@@ -27,18 +28,18 @@ public class Application {
 	@Bean
 	public EmbeddedServletContainerFactory servletContainer() {
 		TomcatEmbeddedServletContainerFactory factory = new TomcatEmbeddedServletContainerFactory();
-//		factory.setPort(8090);
+		// factory.setPort(8090);
 		factory.setSessionTimeout(10, TimeUnit.MINUTES);
 		// factory.addErrorPages(new ErrorPage(HttpStatus.NOT_FOUND,
 		// "/notfound.html"));
 		return factory;
 	}
 
-//	public InitializingBean init() {
-//		return () -> {
-//
-//		};
-//	}
+	// public InitializingBean init() {
+	// return () -> {
+	//
+	// };
+	// }
 	@Bean
 	public PasswordEncoder passwordEncoder() {
 		return new BCryptPasswordEncoder();
@@ -50,6 +51,8 @@ public class Application {
 	}
 
 	public static void main(String[] args) throws InterruptedException {
+//		Function<String, Integer> a = b -> Integer.parseInt(b);
+
 		SpringApplication.run(Application.class, args);
 	}
 }

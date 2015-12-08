@@ -37,4 +37,8 @@ public class AccountsService {
 		getAccounts.setPassword(accounts.getPassword());
 		return accountRepository.save(getAccounts);
 	}
+
+	public void deleteAccounts(Long id) {
+		 accountRepository.delete(id);
+	}
 }

@@ -113,7 +113,20 @@ public class HelloControllerTest {
 		updateResult.andExpect(status().isOk());
 		ResultActions getResult = getAccount(resultAccounts.getId());
 		getResult.andExpect(jsonPath("$.name", is("update wonwoo")));
-
+	}
+	
+	@Test
+	public void deleteAccountsTest() throws Exception {
+		Accounts accounts = new Accounts();
+		accounts.setName("wonwoo");
+		accounts.setPassword("wonwoo123");
+		ResultActions createResult = createAccount(accounts);
+		String respones = createResult.andReturn().getResponse().getContentAsString();
+		Accounts resultAccounts = objectMapper.readValue(respones, Accounts.class);
+		
+		ResultActions deleteResult = mockMvc.perform(delete("/accounts/" + resultAccounts.getId()).contentType(MediaType.APPLICATION_JSON).content(objectMapper.writeValueAsString(resultAccounts)));
+		deleteResult.andDo(print());
+		deleteResult.andExpect(status().isOk());
 	}
 
 	private ResultActions createAccount(Accounts accounts) throws Exception {
