@@ -1,4 +1,4 @@
-package me.wonwoo.hello;
+package me.wonwoo.config;
 
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;

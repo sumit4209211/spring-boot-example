@@ -1,6 +1,6 @@
 package me.wonwoo.config;
 
-import me.wonwoo.hello.Endpoint;
+import me.wonwoo.config.Endpoint;
 
 import org.glassfish.jersey.server.ResourceConfig;
 import org.springframework.stereotype.Component;

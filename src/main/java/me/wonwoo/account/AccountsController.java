@@ -1,4 +1,4 @@
-package me.wonwoo.hello;
+package me.wonwoo.account;
 
 import lombok.extern.slf4j.Slf4j;
 import me.wonwoo.config.Config;
@@ -19,7 +19,7 @@ import java.util.List;
 
 @RestController
 @Slf4j
-public class HelloController {
+public class AccountsController {
 
 	@Autowired
 	private ModelMapper modelMapper;

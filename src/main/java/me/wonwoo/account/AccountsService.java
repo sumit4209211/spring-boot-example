@@ -1,4 +1,6 @@
-package me.wonwoo.hello;
+package me.wonwoo.account;
+
+import me.wonwoo.account.QAccounts;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;

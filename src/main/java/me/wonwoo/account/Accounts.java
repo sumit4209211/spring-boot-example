@@ -1,4 +1,4 @@
-package me.wonwoo.hello;
+package me.wonwoo.account;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

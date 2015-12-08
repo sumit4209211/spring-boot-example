@@ -6,9 +6,8 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-
+import me.wonwoo.account.Accounts;
 import me.wonwoo.config.ConnectionSettings;
-import me.wonwoo.hello.Accounts;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -21,6 +20,7 @@ import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.context.WebApplicationContext;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -28,6 +28,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringApplicationConfiguration(classes = Application.class)
 @WebAppConfiguration
+@Transactional
 public class HelloControllerTest {
 
 	@Autowired
@@ -66,9 +67,7 @@ public class HelloControllerTest {
 	public void createAccountTest() throws Exception {
 		Accounts accounts = new Accounts();
 		accounts.setName("wonwoo");
-		ResultActions createResult = mockMvc.perform(post("/accounts").contentType(MediaType.APPLICATION_JSON).content(objectMapper.writeValueAsString(accounts)));
-		createResult.andDo(print());
-		createResult.andExpect(status().isOk());
+		ResultActions createResult = createAccount(accounts);
 		String respones = createResult.andReturn().getResponse().getContentAsString();
 		Accounts resultAccounts = objectMapper.readValue(respones, Accounts.class);
 		ResultActions getResult = mockMvc.perform(get("/accounts/" + resultAccounts.getId()).contentType(MediaType.APPLICATION_JSON));
@@ -82,9 +81,7 @@ public class HelloControllerTest {
 	public void createAccountDslTest() throws Exception {
 		Accounts accounts = new Accounts();
 		accounts.setName("wonwoo");
-		ResultActions createResult = mockMvc.perform(post("/accounts").contentType(MediaType.APPLICATION_JSON).content(objectMapper.writeValueAsString(accounts)));
-		createResult.andDo(print());
-		createResult.andExpect(status().isOk());
+		ResultActions createResult = createAccount(accounts);
 		String respones = createResult.andReturn().getResponse().getContentAsString();
 		Accounts resultAccounts = objectMapper.readValue(respones, Accounts.class);
 		ResultActions getResult = mockMvc.perform(get("/accountsdsl/" + resultAccounts.getId()).contentType(MediaType.APPLICATION_JSON));
@@ -97,16 +94,11 @@ public class HelloControllerTest {
 	public void createAccountsTest() throws Exception {
 		Accounts accounts = new Accounts();
 		accounts.setName("wonwoo");
-		ResultActions createResult = mockMvc.perform(post("/accounts").contentType(MediaType.APPLICATION_JSON).content(objectMapper.writeValueAsString(accounts)));
-		createResult.andDo(print());
-		createResult.andExpect(status().isOk());
+		ResultActions createResult = createAccount(accounts);
 
 		Accounts accounts2 = new Accounts();
 		accounts2.setName("young gin");
-		ResultActions createResult2 = mockMvc.perform(post("/accounts").contentType(MediaType.APPLICATION_JSON).content(objectMapper.writeValueAsString(accounts2)));
-		createResult2.andDo(print());
-		createResult2.andExpect(status().isOk());
-
+		ResultActions createResult2 = createAccount(accounts2);
 
 		String respones = createResult.andReturn().getResponse().getContentAsString();
 		Accounts resultAccounts = objectMapper.readValue(respones, Accounts.class);
@@ -114,6 +106,12 @@ public class HelloControllerTest {
 		getResult.andDo(print());
 		getResult.andExpect(status().isOk());
 
-
+	}
+	
+	private ResultActions createAccount(Accounts accounts) throws Exception{
+		ResultActions createResult = mockMvc.perform(post("/accounts").contentType(MediaType.APPLICATION_JSON).content(objectMapper.writeValueAsString(accounts)));
+		createResult.andDo(print());
+		createResult.andExpect(status().isOk());
+		return createResult;
 	}
 }
