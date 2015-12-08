@@ -32,6 +32,8 @@ public class AccountsController {
 	@Autowired
 	private Config config;
 
+	// TODO error 처리
+
 	@RequestMapping(value = "/accounts/{id}", method = RequestMethod.GET)
 	public ResponseEntity<?> getAccount(@PathVariable Long id) {
 		Accounts saveAccounts = service.getAccount(id);
