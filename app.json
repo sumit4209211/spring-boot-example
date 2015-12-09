@@ -1,13 +1,5 @@
 {
   "name": "spring-boot-example",
-  "scripts": {
-  },
-  "env": {
-    "JAVA_OPTS": {
-      "required": true
-    }
-  },
-  "addons": [
-    "heroku-postgresql"
-  ]
+  "repository": "https://github.com/wonwoo/spring-boot-example",
+  "image": "heroku/java",
 }
