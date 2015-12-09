@@ -1,4 +1,4 @@
-{
+{ 
   "name": "spring-boot-example",
   "repository": "https://github.com/wonwoo/spring-boot-example",
   "image": "heroku/java",
