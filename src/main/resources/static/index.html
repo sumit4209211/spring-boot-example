@@ -1,10 +1,28 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" ng-app="myApp">
 <head>
     <meta charset="UTF-8">
     <title>Spring Boot</title>
+    <script type="text/javascript" src="/webjars/angular/1.5.0-beta.2/angular.js"></script>
+    <script type="text/javascript" src="/webjars/angular-bootstrap/0.14.3/ui-bootstrap.js"></script>
+    <script>
+		
+    var app = angular.module('myApp', []);
+    app.controller('myCtrl', function($scope, $http) {
+        $http.get("/accounts/1")
+        .then(function(response) {
+        	$scope.name = response.data.name;
+        	$scope.password = response.data.password;
+        });
+    });
+		
+</script>
 </head>
-<body>
-Hello Spring Boot 
-</body>
+<div ng-controller="myCtrl">
+	names: <input type="text" ng-model="name"><br>
+	password: <input type="text" ng-model="password"><br>
+	<br>
+	Full Name: {{name + " " + password}}
+</div>
 </html>
+
