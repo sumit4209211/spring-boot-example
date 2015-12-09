@@ -39,6 +39,7 @@ public class AccountsService {
 	}
 
 	public void deleteAccounts(Long id) {
+		
 		 accountRepository.delete(id);
 	}
 }
