@@ -1,6 +1,5 @@
 package me.wonwoo.account;
 
-import me.wonwoo.account.QAccounts;
 import me.wonwoo.exception.AccountsNotFoundException;
 import me.wonwoo.exception.DuplicateException;
 
@@ -33,9 +32,9 @@ public class AccountsService {
 		return accountRepository.findAll(pageable);
 	}
 
-	public Accounts getAccountQueryDsl(Long id) {
-		return accountRepository.findOne(QAccounts.accounts.id.eq(id));
-	}
+//	public Accounts getAccountQueryDsl(Long id) {
+//		return accountRepository.findOne(QAccounts.accounts.id.eq(id));
+//	}
 
 	public Accounts saveAccounts(Accounts accounts) {
 		if (getAccount(accounts.getName()) != null) {

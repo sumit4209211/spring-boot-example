@@ -1,14 +1,9 @@
 package me.wonwoo;
 
-import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.httpBasic;
-import me.wonwoo.account.Accounts;
-import me.wonwoo.account.AccountsService;
-import me.wonwoo.config.ConnectionSettings;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -26,6 +21,10 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.context.WebApplicationContext;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+
+import me.wonwoo.account.Accounts;
+import me.wonwoo.account.AccountsService;
+import me.wonwoo.config.ConnectionSettings;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringApplicationConfiguration(classes = Application.class)
@@ -46,9 +45,7 @@ public class HelloControllerTest {
 
 	@Before
 	public void setUp() {
-		mockMvc = MockMvcBuilders.webAppContextSetup(wac)
-                .addFilter(springSecurityFilterChain)
-                .build();
+		mockMvc = MockMvcBuilders.webAppContextSetup(wac).addFilter(springSecurityFilterChain).build();
 	}
 
 	@Autowired
@@ -58,8 +55,8 @@ public class HelloControllerTest {
 	public void connectionTest() {
 		System.out.println(connectionSettings.getUsername());
 		System.out.println(connectionSettings.getRemoteAddress());
-
 	}
+
 
 	@Test
 	public void createAccountTest() throws Exception {
@@ -75,20 +72,21 @@ public class HelloControllerTest {
 		getResult.andExpect(jsonPath("$.name", is("wonwoo")));
 	}
 
-	@Test
-	public void createAccountDslTest() throws Exception {
-		Accounts accounts = new Accounts();
-		accounts.setName("wonwoo");
-		accounts.setPassword("wonwoo123");
-		ResultActions createResult = createAccount(accounts);
-		createResult.andExpect(status().isOk());
-		String respones = createResult.andReturn().getResponse().getContentAsString();
-		Accounts resultAccounts = objectMapper.readValue(respones, Accounts.class);
-		ResultActions getResult = mockMvc.perform(get("/accountsdsl/" + resultAccounts.getId()).contentType(MediaType.APPLICATION_JSON));
-		getResult.andDo(print());
-		getResult.andExpect(status().isOk());
-		getResult.andExpect(jsonPath("$.name", is("wonwoo")));
-	}
+//	@Test
+//	public void createAccountDslTest() throws Exception {
+//		Accounts accounts = new Accounts();
+//		accounts.setName("wonwoo");
+//		accounts.setPassword("wonwoo123");
+//		ResultActions createResult = createAccount(accounts);
+//		createResult.andExpect(status().isOk());
+//		String respones = createResult.andReturn().getResponse().getContentAsString();
+//		Accounts resultAccounts = objectMapper.readValue(respones, Accounts.class);
+//		ResultActions getResult = mockMvc
+//				.perform(get("/accountsdsl/" + resultAccounts.getId()).contentType(MediaType.APPLICATION_JSON));
+//		getResult.andDo(print());
+//		getResult.andExpect(status().isOk());
+//		getResult.andExpect(jsonPath("$.name", is("wonwoo")));
+//	}
 
 	@Test
 	public void createAccountsTest() throws Exception {
@@ -121,7 +119,8 @@ public class HelloControllerTest {
 
 		resultAccounts.setName("update wonwoo");
 
-		ResultActions updateResult = mockMvc.perform(put("/accounts/" + resultAccounts.getId()).contentType(MediaType.APPLICATION_JSON).content(objectMapper.writeValueAsString(resultAccounts)));
+		ResultActions updateResult = mockMvc.perform(put("/accounts/" + resultAccounts.getId())
+				.contentType(MediaType.APPLICATION_JSON).content(objectMapper.writeValueAsString(resultAccounts)));
 		updateResult.andDo(print());
 		updateResult.andExpect(status().isOk());
 		ResultActions getResult = getAccount(resultAccounts.getId());
@@ -139,7 +138,8 @@ public class HelloControllerTest {
 		String respones = createResult.andReturn().getResponse().getContentAsString();
 		Accounts resultAccounts = objectMapper.readValue(respones, Accounts.class);
 
-		ResultActions deleteResult = mockMvc.perform(delete("/accounts/" + resultAccounts.getId()).contentType(MediaType.APPLICATION_JSON).content(objectMapper.writeValueAsString(resultAccounts)));
+		ResultActions deleteResult = mockMvc.perform(delete("/accounts/" + resultAccounts.getId())
+				.contentType(MediaType.APPLICATION_JSON).content(objectMapper.writeValueAsString(resultAccounts)));
 		deleteResult.andDo(print());
 		deleteResult.andExpect(status().isOk());
 	}
@@ -150,7 +150,7 @@ public class HelloControllerTest {
 		accounts.setName("wonwoo");
 		accounts.setPassword("wonwoo123");
 		createAccount(accounts);
-		
+
 		ResultActions actions = getAccount(2L);
 		actions.andExpect(status().isBadRequest());
 		String response = actions.andReturn().getResponse().getContentAsString();
@@ -163,13 +163,15 @@ public class HelloControllerTest {
 		creatDto.setName("wonwoo");
 		creatDto.setPassword("wonwoo123");
 
-		ResultActions result = mockMvc.perform(post("/accounts").contentType(MediaType.APPLICATION_JSON).content(objectMapper.writeValueAsString(creatDto)));
+		ResultActions result = mockMvc.perform(post("/accounts").contentType(MediaType.APPLICATION_JSON)
+				.content(objectMapper.writeValueAsString(creatDto)));
 
 		result.andDo(print());
 		result.andExpect(status().isOk());
 		result.andExpect(jsonPath("$.name", is("wonwoo")));
 
-		result = mockMvc.perform(post("/accounts").contentType(MediaType.APPLICATION_JSON).content(objectMapper.writeValueAsString(creatDto)));
+		result = mockMvc.perform(post("/accounts").contentType(MediaType.APPLICATION_JSON)
+				.content(objectMapper.writeValueAsString(creatDto)));
 
 		result.andDo(print());
 		result.andExpect(status().isBadRequest());
@@ -186,10 +188,12 @@ public class HelloControllerTest {
 		accounts.setName("wonwoo");
 		accounts.setPassword("wonwoo123");
 
-		ResultActions createResult = mockMvc.perform(post("/accounts").contentType(MediaType.APPLICATION_JSON).content(objectMapper.writeValueAsString(accounts)));
+		ResultActions createResult = mockMvc.perform(post("/accounts").contentType(MediaType.APPLICATION_JSON)
+				.content(objectMapper.writeValueAsString(accounts)));
 		createResult.andDo(print());
 
-		createResult = mockMvc.perform(post("/accounts").contentType(MediaType.APPLICATION_JSON).content(objectMapper.writeValueAsString(accounts)));
+		createResult = mockMvc.perform(post("/accounts").contentType(MediaType.APPLICATION_JSON)
+				.content(objectMapper.writeValueAsString(accounts)));
 		createResult.andDo(print());
 		createResult.andExpect(status().isBadRequest());
 		// createResult.andExpect(status().isOk());
@@ -214,14 +218,15 @@ public class HelloControllerTest {
 	}
 
 	private ResultActions createAccount(Accounts accounts) throws Exception {
-		ResultActions createResult = mockMvc.perform(post("/accounts").contentType(MediaType.APPLICATION_JSON).content(objectMapper.writeValueAsString(accounts)));
+		ResultActions createResult = mockMvc.perform(post("/accounts").contentType(MediaType.APPLICATION_JSON)
+				.content(objectMapper.writeValueAsString(accounts)));
 		createResult.andDo(print());
 		// createResult.andExpect(status().isOk());
 		return createResult;
 	}
 
 	private ResultActions getAccount(Long id) throws Exception {
-		//.with(httpBasic("wonwoo", "wonwoo123"))
+		// .with(httpBasic("wonwoo", "wonwoo123"))
 		ResultActions getResult = mockMvc.perform(get("/accounts/" + id).contentType(MediaType.APPLICATION_JSON));
 		getResult.andDo(print());
 		// getResult.andExpect(status().isOk());

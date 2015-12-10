@@ -5,7 +5,7 @@ import org.springframework.data.querydsl.QueryDslPredicateExecutor;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface AccountRepository extends JpaRepository<Accounts, Long>, QueryDslPredicateExecutor<Accounts> {
+public interface AccountRepository extends JpaRepository<Accounts, Long> {
 
 	public Accounts findByname(String name);
 

@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
+import java.util.function.Function;
 
 import static org.junit.Assert.*;
 
@@ -47,11 +48,11 @@ public class AccountsController {
 		return new ResponseEntity<>(accounts, HttpStatus.OK);
 	}
 
-	@RequestMapping(value = "/accountsdsl/{id}", method = RequestMethod.GET)
-	public ResponseEntity<?> getAccountsQueryDsl(@PathVariable Long id) {
-		Accounts saveAccounts = service.getAccountQueryDsl(id);
-		return new ResponseEntity<>(saveAccounts, HttpStatus.OK);
-	}
+//	@RequestMapping(value = "/accountsdsl/{id}", method = RequestMethod.GET)
+//	public ResponseEntity<?> getAccountsQueryDsl(@PathVariable Long id) {
+//		Accounts saveAccounts = service.getAccountQueryDsl(id);
+//		return new ResponseEntity<>(saveAccounts, HttpStatus.OK);
+//	}
 
 	@RequestMapping(value = "/accounts", method = RequestMethod.POST)
 	public ResponseEntity<?> saveAccounts(@RequestBody Accounts accounts) {

@@ -17,4 +17,10 @@ public class Accounts {
 	private Long id;
 	private String name;
 	private String password;
+
+	public Accounts(String name, String password) {
+		this.name = name;
+		this.password = password;
+
+	}
 }
