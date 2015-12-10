@@ -15,12 +15,15 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
+
 import java.util.List;
+
 import static org.junit.Assert.*;
 
-@RestController
 @Slf4j
+@RestController
 public class AccountsController {
 
 	@Autowired
@@ -37,7 +40,6 @@ public class AccountsController {
 	@RequestMapping(value = "/accounts/{id}", method = RequestMethod.GET)
 	public ResponseEntity<?> getAccount(@PathVariable Long id) {
 		Accounts saveAccounts = service.getAccount(id);
-		assertNotNull(" accounts is null", saveAccounts);
 		return new ResponseEntity<>(saveAccounts, HttpStatus.OK);
 	}
 

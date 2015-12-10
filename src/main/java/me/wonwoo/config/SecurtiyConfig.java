@@ -21,26 +21,25 @@ public class SecurtiyConfig extends WebSecurityConfigurerAdapter {
 	@Autowired
 	private UserDetailsService userDetailsService;
 
-	// @Override
-	// protected void configure(AuthenticationManagerBuilder auth) throws
-	// Exception {
-	// auth.userDetailsService(userDetailsService).passwordEncoder(passwordEncoder);
-	// }
-
-	@Autowired
-	public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
-		auth.inMemoryAuthentication().withUser("user").password("password").roles("USER");
+	@Override
+	protected void configure(AuthenticationManagerBuilder auth) throws Exception {
+		auth.userDetailsService(userDetailsService).passwordEncoder(passwordEncoder);
 	}
+
+	// @Autowired
+	// public void configureGlobal(AuthenticationManagerBuilder auth) throws
+	// Exception {
+	// auth.inMemoryAuthentication().withUser("user").password("password").roles("USER");
+	// }
 
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
 		http.csrf().disable();
-
 		http.httpBasic();
-
-		http.authorizeRequests()
-			.antMatchers("/accounts/**")
-			.hasRole("USER")
-			.anyRequest().permitAll();
+//		http.authorizeRequests()
+//				.antMatchers(HttpMethod.GET, "/accounts/**").hasRole("USER")
+//				.antMatchers(HttpMethod.PUT, "/accounts/**").hasRole("USER")
+//				.antMatchers(HttpMethod.DELETE, "/accounts/**").hasRole("USER")
+//				.anyRequest().permitAll();
 	}
 }
