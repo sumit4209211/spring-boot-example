@@ -91,7 +91,7 @@ public class HelloControllerTest {
 	@Test
 	public void createAccountsTest() throws Exception {
 		Accounts accounts = new Accounts();
-		accounts.setName("wonwoo");
+		accounts.setName("wonwoo12388");
 		accounts.setPassword("wonwoo123");
 		ResultActions createResult = createAccount(accounts);
 		createResult.andExpect(status().isOk());

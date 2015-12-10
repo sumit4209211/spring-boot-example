@@ -44,7 +44,7 @@ public class ConfigMvc {
 	@Bean
 	public InitializingBean init() {
 		return () -> {
-			accountsService.saveAccounts(new Accounts("wonwoo999", "wonwon123"));
+			accountsService.saveAccounts(new Accounts("wonwoo", "wonwon123"));
 			accountsService.saveAccounts(new Accounts("wonwoo871", "8811jsnn"));
 		};
 	}
