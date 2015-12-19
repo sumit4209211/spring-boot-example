@@ -1,10 +1,10 @@
 package me.wonwoo;
 
-import static org.hamcrest.CoreMatchers.*;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
-
+import com.fasterxml.jackson.databind.ObjectMapper;
+import me.wonwoo.account.Accounts;
+import me.wonwoo.account.AccountsService;
+import me.wonwoo.config.ConnectionSettings;
+import me.wonwoo.config.oauth2.AccessToken;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -18,13 +18,13 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.Base64Utils;
 import org.springframework.web.context.WebApplicationContext;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-
-import me.wonwoo.account.Accounts;
-import me.wonwoo.account.AccountsService;
-import me.wonwoo.config.ConnectionSettings;
+import static org.hamcrest.Matchers.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringApplicationConfiguration(classes = Application.class)
@@ -226,11 +226,46 @@ public class HelloControllerTest {
 	}
 
 	private ResultActions getAccount(Long id) throws Exception {
-		// .with(httpBasic("wonwoo", "wonwoo123"))
-		ResultActions getResult = mockMvc.perform(get("/accounts/" + id).contentType(MediaType.APPLICATION_JSON));
+		String accessToken = getAccessToken("wonwoo","pwadmin");
+		ResultActions getResult = mockMvc.perform(get("/accounts/" + id).header("Authorization", "Bearer " + accessToken).contentType(MediaType.APPLICATION_JSON));
 		getResult.andDo(print());
 		// getResult.andExpect(status().isOk());
 		return getResult;
+	}
+
+	private String getAccessToken(String username, String password) throws Exception {
+		String authorization = "Basic " + new String(Base64Utils.encode("myapp:XX001".getBytes()));
+		String contentType = MediaType.APPLICATION_JSON + ";charset=UTF-8";
+		String content = mockMvc
+				.perform(
+						post("/oauth/token")
+								.header("Authorization", authorization)
+								.contentType(
+										MediaType.APPLICATION_FORM_URLENCODED)
+								.param("username", username)
+								.param("password", password)
+								.param("grant_type", "password")
+								.param("scope", "read")
+								.param("client_id", "myapp")
+								.param("client_secret", "XX001"))
+				.andExpect(status().isOk())
+				.andExpect(content().contentType(contentType))
+				.andExpect(jsonPath("$.access_token", is(notNullValue())))
+				.andExpect(jsonPath("$.token_type", is(equalTo("bearer"))))
+				.andExpect(jsonPath("$.refresh_token", is(notNullValue())))
+				.andExpect(jsonPath("$.expires_in", is(greaterThan(4000))))
+				.andExpect(jsonPath("$.scope", is(equalTo("read"))))
+				.andDo(print())
+				.andReturn().getResponse().getContentAsString();
+
+		AccessToken accessToken = objectMapper.readValue(content, AccessToken.class);
+		return accessToken.getAccess_token();
+	}
+
+	@Test
+	public void getAccountScopeTest() throws Exception {
+		getAccount(1L).andExpect(status().isForbidden())
+					  .andDo(print());
 	}
 
 }
