@@ -43,9 +43,40 @@ public class HelloControllerTest {
 	@Autowired
 	private FilterChainProxy springSecurityFilterChain;
 
+	public static final String username = "wonwoo";
+
+	public static final String password = "pwadmin";
+
+	public String accessToken;
+
 	@Before
-	public void setUp() {
+	public void setUp() throws Exception {
 		mockMvc = MockMvcBuilders.webAppContextSetup(wac).addFilter(springSecurityFilterChain).build();
+		String authorization = "Basic " + new String(Base64Utils.encode("myapp:XX001".getBytes()));
+		String contentType = MediaType.APPLICATION_JSON + ";charset=UTF-8";
+		String content = mockMvc
+				.perform(
+						post("/oauth/token")
+								.header("Authorization", authorization)
+								.contentType(
+										MediaType.APPLICATION_FORM_URLENCODED)
+								.param("username", username)
+								.param("password", password)
+								.param("grant_type", "password")
+								.param("scope", "read write")
+								.param("client_id", "myapp")
+								.param("client_secret", "XX001"))
+				.andExpect(status().isOk())
+				.andExpect(content().contentType(contentType))
+				.andExpect(jsonPath("$.access_token", is(notNullValue())))
+				.andExpect(jsonPath("$.token_type", is(equalTo("bearer"))))
+				.andExpect(jsonPath("$.refresh_token", is(notNullValue())))
+				.andExpect(jsonPath("$.expires_in", is(greaterThan(4000))))
+				.andExpect(jsonPath("$.scope", is(equalTo("read write"))))
+				.andDo(print())
+				.andReturn().getResponse().getContentAsString();
+		AccessToken accessToken = objectMapper.readValue(content, AccessToken.class);
+		this.accessToken = accessToken.getAccess_token();
 	}
 
 	@Autowired
@@ -61,15 +92,15 @@ public class HelloControllerTest {
 	@Test
 	public void createAccountTest() throws Exception {
 		Accounts accounts = new Accounts();
-		accounts.setName("wonwoo");
-		accounts.setPassword("wonwoo123");
+		accounts.setName("wonwoo00");
+		accounts.setPassword("wonwoo00");
 		ResultActions createResult = createAccount(accounts);
 		createResult.andExpect(status().isOk());
 		String respones = createResult.andReturn().getResponse().getContentAsString();
 		Accounts resultAccounts = objectMapper.readValue(respones, Accounts.class);
 		ResultActions getResult = getAccount(resultAccounts.getId());
 		getResult.andExpect(status().isOk());
-		getResult.andExpect(jsonPath("$.name", is("wonwoo")));
+		getResult.andExpect(jsonPath("$.name", is("wonwoo00")));
 	}
 
 //	@Test
@@ -102,7 +133,7 @@ public class HelloControllerTest {
 		ResultActions createResult2 = createAccount(accounts2);
 		createResult2.andExpect(status().isOk());
 
-		ResultActions getResult = mockMvc.perform(get("/accounts").contentType(MediaType.APPLICATION_JSON));
+		ResultActions getResult = mockMvc.perform(get("/accounts").header("Authorization", "Bearer " + accessToken).contentType(MediaType.APPLICATION_JSON));
 		getResult.andDo(print());
 		getResult.andExpect(status().isOk());
 
@@ -110,48 +141,31 @@ public class HelloControllerTest {
 
 	@Test
 	public void updateAccountsTest() throws Exception {
-		Accounts accounts = new Accounts();
-		accounts.setName("wonwoo");
-		accounts.setPassword("wonwoo123");
-		ResultActions createResult = createAccount(accounts);
-		String respones = createResult.andReturn().getResponse().getContentAsString();
-		Accounts resultAccounts = objectMapper.readValue(respones, Accounts.class);
+		Accounts resultAccounts = new Accounts();
 
-		resultAccounts.setName("update wonwoo");
 
-		ResultActions updateResult = mockMvc.perform(put("/accounts/" + resultAccounts.getId())
+		resultAccounts.setName("wonwooUpdate");
+
+		ResultActions updateResult = mockMvc.perform(put("/accounts/1").header("Authorization", "Bearer " + accessToken)
 				.contentType(MediaType.APPLICATION_JSON).content(objectMapper.writeValueAsString(resultAccounts)));
 		updateResult.andDo(print());
 		updateResult.andExpect(status().isOk());
-		ResultActions getResult = getAccount(resultAccounts.getId());
+		ResultActions getResult = getAccount(1L);
 		getResult.andExpect(status().isOk());
-		getResult.andExpect(jsonPath("$.name", is("update wonwoo")));
+		getResult.andExpect(jsonPath("$.name", is("wonwooUpdate")));
 	}
 
 	@Test
 	public void deleteAccountsTest() throws Exception {
-		Accounts accounts = new Accounts();
-		accounts.setName("wonwoo");
-		accounts.setPassword("wonwoo123");
-		ResultActions createResult = createAccount(accounts);
-		createResult.andExpect(status().isOk());
-		String respones = createResult.andReturn().getResponse().getContentAsString();
-		Accounts resultAccounts = objectMapper.readValue(respones, Accounts.class);
-
-		ResultActions deleteResult = mockMvc.perform(delete("/accounts/" + resultAccounts.getId())
-				.contentType(MediaType.APPLICATION_JSON).content(objectMapper.writeValueAsString(resultAccounts)));
+		ResultActions deleteResult = mockMvc.perform(delete("/accounts/2").header("Authorization", "Bearer " + accessToken)
+				.contentType(MediaType.APPLICATION_JSON));
 		deleteResult.andDo(print());
 		deleteResult.andExpect(status().isOk());
 	}
 
 	@Test
 	public void getAccountnotFoundExceptionTest() throws Exception {
-		Accounts accounts = new Accounts();
-		accounts.setName("wonwoo");
-		accounts.setPassword("wonwoo123");
-		createAccount(accounts);
-
-		ResultActions actions = getAccount(2L);
+		ResultActions actions = getAccount(100L);
 		actions.andExpect(status().isBadRequest());
 		String response = actions.andReturn().getResponse().getContentAsString();
 		System.out.println(response);
@@ -160,17 +174,17 @@ public class HelloControllerTest {
 	@Test
 	public void createAccount() throws Exception {
 		Accounts creatDto = new Accounts();
-		creatDto.setName("wonwoo");
+		creatDto.setName("wonwoo1010");
 		creatDto.setPassword("wonwoo123");
 
-		ResultActions result = mockMvc.perform(post("/accounts").contentType(MediaType.APPLICATION_JSON)
+		ResultActions result = mockMvc.perform(post("/accounts").header("Authorization", "Bearer " + accessToken).contentType(MediaType.APPLICATION_JSON)
 				.content(objectMapper.writeValueAsString(creatDto)));
 
 		result.andDo(print());
 		result.andExpect(status().isOk());
-		result.andExpect(jsonPath("$.name", is("wonwoo")));
+		result.andExpect(jsonPath("$.name", is("wonwoo1010")));
 
-		result = mockMvc.perform(post("/accounts").contentType(MediaType.APPLICATION_JSON)
+		result = mockMvc.perform(post("/accounts").header("Authorization", "Bearer " + accessToken).contentType(MediaType.APPLICATION_JSON)
 				.content(objectMapper.writeValueAsString(creatDto)));
 
 		result.andDo(print());
@@ -188,11 +202,11 @@ public class HelloControllerTest {
 		accounts.setName("wonwoo");
 		accounts.setPassword("wonwoo123");
 
-		ResultActions createResult = mockMvc.perform(post("/accounts").contentType(MediaType.APPLICATION_JSON)
+		ResultActions createResult = mockMvc.perform(post("/accounts").header("Authorization", "Bearer " + accessToken).contentType(MediaType.APPLICATION_JSON)
 				.content(objectMapper.writeValueAsString(accounts)));
 		createResult.andDo(print());
 
-		createResult = mockMvc.perform(post("/accounts").contentType(MediaType.APPLICATION_JSON)
+		createResult = mockMvc.perform(post("/accounts").header("Authorization", "Bearer " + accessToken).contentType(MediaType.APPLICATION_JSON)
 				.content(objectMapper.writeValueAsString(accounts)));
 		createResult.andDo(print());
 		createResult.andExpect(status().isBadRequest());
@@ -218,7 +232,7 @@ public class HelloControllerTest {
 	}
 
 	private ResultActions createAccount(Accounts accounts) throws Exception {
-		ResultActions createResult = mockMvc.perform(post("/accounts").contentType(MediaType.APPLICATION_JSON)
+		ResultActions createResult = mockMvc.perform(post("/accounts").header("Authorization", "Bearer " + accessToken).contentType(MediaType.APPLICATION_JSON)
 				.content(objectMapper.writeValueAsString(accounts)));
 		createResult.andDo(print());
 		// createResult.andExpect(status().isOk());
@@ -226,45 +240,18 @@ public class HelloControllerTest {
 	}
 
 	private ResultActions getAccount(Long id) throws Exception {
-		String accessToken = getAccessToken("wonwoo","pwadmin");
+//		String accessToken = getAccessToken("wonwoo","pwadmin");
 		ResultActions getResult = mockMvc.perform(get("/accounts/" + id).header("Authorization", "Bearer " + accessToken).contentType(MediaType.APPLICATION_JSON));
 		getResult.andDo(print());
 		// getResult.andExpect(status().isOk());
 		return getResult;
 	}
 
-	private String getAccessToken(String username, String password) throws Exception {
-		String authorization = "Basic " + new String(Base64Utils.encode("myapp:XX001".getBytes()));
-		String contentType = MediaType.APPLICATION_JSON + ";charset=UTF-8";
-		String content = mockMvc
-				.perform(
-						post("/oauth/token")
-								.header("Authorization", authorization)
-								.contentType(
-										MediaType.APPLICATION_FORM_URLENCODED)
-								.param("username", username)
-								.param("password", password)
-								.param("grant_type", "password")
-								.param("scope", "read")
-								.param("client_id", "myapp")
-								.param("client_secret", "XX001"))
-				.andExpect(status().isOk())
-				.andExpect(content().contentType(contentType))
-				.andExpect(jsonPath("$.access_token", is(notNullValue())))
-				.andExpect(jsonPath("$.token_type", is(equalTo("bearer"))))
-				.andExpect(jsonPath("$.refresh_token", is(notNullValue())))
-				.andExpect(jsonPath("$.expires_in", is(greaterThan(4000))))
-				.andExpect(jsonPath("$.scope", is(equalTo("read"))))
-				.andDo(print())
-				.andReturn().getResponse().getContentAsString();
 
-		AccessToken accessToken = objectMapper.readValue(content, AccessToken.class);
-		return accessToken.getAccess_token();
-	}
 
 	@Test
 	public void getAccountScopeTest() throws Exception {
-		getAccount(1L).andExpect(status().isForbidden())
+		getAccount(1L).andExpect(status().isOk())
 					  .andDo(print());
 	}
 
