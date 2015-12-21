@@ -1,8 +1,5 @@
 package me.wonwoo.account;
 
-import me.wonwoo.exception.AccountsNotFoundException;
-import me.wonwoo.exception.DuplicateException;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -10,13 +7,16 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import me.wonwoo.exception.AccountsNotFoundException;
+import me.wonwoo.exception.DuplicateException;
+
 @Service
 @Transactional
 public class AccountsService {
 
-    @Autowired
-    private PasswordEncoder passwordEncoder;
-    
+	@Autowired
+	private PasswordEncoder passwordEncoder;
+
 	@Autowired
 	private AccountRepository accountRepository;
 
@@ -32,10 +32,6 @@ public class AccountsService {
 		return accountRepository.findAll(pageable);
 	}
 
-//	public Accounts getAccountQueryDsl(Long id) {
-//		return accountRepository.findOne(QAccounts.accounts.id.eq(id));
-//	}
-
 	public Accounts saveAccounts(Accounts accounts) {
 		if (getAccount(accounts.getName()) != null) {
 			throw new DuplicateException(accounts.getName());
@@ -46,11 +42,11 @@ public class AccountsService {
 
 	public Accounts updateAccounts(Long id, Accounts accounts) {
 		Accounts getAccounts = getAccount(id);
-		if(getAccounts == null){
+		if (getAccounts == null) {
 			throw new AccountsNotFoundException(id);
 		}
 		getAccounts.setName(accounts.getName());
-		getAccounts.setPassword(accounts.getPassword());
+		getAccounts.setPassword(passwordEncoder.encode(accounts.getPassword()));
 		return accountRepository.save(getAccounts);
 	}
 
@@ -58,8 +54,15 @@ public class AccountsService {
 		return accountRepository.findByname(name);
 	}
 
-	// TODO TEST
 	public void deleteAccounts(Long id) {
+		Accounts getAccounts = getAccount(id);
+		if (getAccounts == null) {
+			throw new AccountsNotFoundException(id);
+		}
 		accountRepository.delete(id);
 	}
+
+	// public Accounts getAccountQueryDsl(Long id) {
+	// return accountRepository.findOne(QAccounts.accounts.id.eq(id));
+	// }
 }

@@ -33,74 +33,79 @@ import org.springframework.security.oauth2.config.annotation.web.configurers.Res
 import org.springframework.security.oauth2.provider.token.DefaultTokenServices;
 import org.springframework.security.oauth2.provider.token.TokenStore;
 import org.springframework.security.oauth2.provider.token.store.InMemoryTokenStore;
+import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
+import org.springframework.security.web.util.matcher.OrRequestMatcher;
 
 @Configuration
 public class OAuth2ServerConfiguration {
 
-    private static final String RESOURCE_ID = "restservice";
+	private static final String RESOURCE_ID = "restservice";
 
-    @Configuration
-    @EnableResourceServer
-    protected static class ResourceServerConfiguration extends
-            ResourceServerConfigurerAdapter {
+	@Configuration
+	@EnableResourceServer
+	protected static class ResourceServerConfiguration extends ResourceServerConfigurerAdapter {
 
-        @Override
-        public void configure(ResourceServerSecurityConfigurer resources) {
-            resources
-                    .resourceId(RESOURCE_ID);
-        }
+		@Override
+		public void configure(ResourceServerSecurityConfigurer resources) {
+			resources.resourceId(RESOURCE_ID);
+		}
 
+		@Override
+		public void configure(HttpSecurity http) throws Exception {
+//			http
+//					.requestMatcher(new OrRequestMatcher(new AntPathRequestMatcher("/")))
+//					.authorizeRequests().anyRequest().access("#oauth2.hasScope('read')");
+			
+			  http
+              .authorizeRequests()
+              .antMatchers("/accounts/*").access("#oauth2.hasScope('write')")
+              .antMatchers("/accounts").authenticated();
+		}
 
-        @Override
-        public void configure(HttpSecurity http) throws Exception {
-            http
-                    .authorizeRequests()
-                    .antMatchers("/accounts/*").access("#oauth2.hasScope('write')")
-                    .antMatchers("/accounts").authenticated();
-        }
+	}
 
-    }
+	@Configuration
+	@EnableAuthorizationServer
+	protected static class AuthorizationServerConfiguration extends AuthorizationServerConfigurerAdapter {
 
-    @Configuration
-    @EnableAuthorizationServer
-    protected static class AuthorizationServerConfiguration extends
-            AuthorizationServerConfigurerAdapter {
+		private TokenStore tokenStore = new InMemoryTokenStore();
 
-        private TokenStore tokenStore = new InMemoryTokenStore();
+		@Autowired
+		private AuthenticationManager authenticationManager;
 
-        @Autowired
-        private AuthenticationManager authenticationManager;
+		@Autowired
+		private UserDetailsService userDetailsService;
 
-        @Autowired
-        private UserDetailsService userDetailsService;
+		@Override
+		public void configure(AuthorizationServerEndpointsConfigurer endpoints) throws Exception {
+			endpoints.tokenStore(this.tokenStore).authenticationManager(this.authenticationManager)
+					.userDetailsService(userDetailsService);
+		}
 
-        @Override
-        public void configure(AuthorizationServerEndpointsConfigurer endpoints)
-                throws Exception {
-            endpoints
-                    .tokenStore(this.tokenStore)
-                    .authenticationManager(this.authenticationManager)
-                    .userDetailsService(userDetailsService);
-        }
+		@Override
+		public void configure(ClientDetailsServiceConfigurer clients) throws Exception {
+			clients.inMemory()
+					.withClient("myapp")
+					.authorizedGrantTypes("password", "refresh_token")
+					.scopes("read", "write")
+					.resourceIds(RESOURCE_ID)
+					.secret("XX001");
+//				.and()
+//					.withClient("myapp2")
+//					.authorizedGrantTypes("authorization_code")
+//					.authorities("ROLE_CLIENT")
+//					.scopes("read", "write")
+//					.resourceIds(RESOURCE_ID)
+//					.secret("XX002");
+		}
 
-        @Override
-        public void configure(ClientDetailsServiceConfigurer clients) throws Exception {
-            clients
-                    .inMemory()
-                    .withClient("myapp")
-                    .authorizedGrantTypes("password", "refresh_token")
-                    .scopes("read", "write")
-                    .resourceIds(RESOURCE_ID)
-                    .secret("XX001");
-        }
-
-        @Bean
-        @Primary
-        public DefaultTokenServices tokenServices() {
-            DefaultTokenServices tokenServices = new DefaultTokenServices();
-            tokenServices.setSupportRefreshToken(true);
-            tokenServices.setTokenStore(this.tokenStore);
-            return tokenServices;
-        }
-    }
+		@Bean
+		@Primary
+		public DefaultTokenServices tokenServices() {
+			DefaultTokenServices tokenServices = new DefaultTokenServices();
+			tokenServices.setSupportRefreshToken(true);
+			tokenServices.setTokenStore(this.tokenStore);
+			return tokenServices;
+		}
+	}
 }

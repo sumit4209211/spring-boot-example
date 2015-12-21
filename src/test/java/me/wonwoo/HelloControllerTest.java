@@ -1,10 +1,10 @@
 package me.wonwoo;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import me.wonwoo.account.Accounts;
-import me.wonwoo.account.AccountsService;
-import me.wonwoo.config.ConnectionSettings;
-import me.wonwoo.config.oauth2.AccessToken;
+import static org.hamcrest.Matchers.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -21,10 +21,11 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Base64Utils;
 import org.springframework.web.context.WebApplicationContext;
 
-import static org.hamcrest.Matchers.*;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
+import me.wonwoo.account.Accounts;
+import me.wonwoo.config.ConnectionSettings;
+import me.wonwoo.config.oauth2.AccessToken;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringApplicationConfiguration(classes = Application.class)
@@ -55,26 +56,17 @@ public class HelloControllerTest {
 		String authorization = "Basic " + new String(Base64Utils.encode("myapp:XX001".getBytes()));
 		String contentType = MediaType.APPLICATION_JSON + ";charset=UTF-8";
 		String content = mockMvc
-				.perform(
-						post("/oauth/token")
-								.header("Authorization", authorization)
-								.contentType(
-										MediaType.APPLICATION_FORM_URLENCODED)
-								.param("username", username)
-								.param("password", password)
-								.param("grant_type", "password")
-								.param("scope", "read write")
-								.param("client_id", "myapp")
-								.param("client_secret", "XX001"))
-				.andExpect(status().isOk())
-				.andExpect(content().contentType(contentType))
+				.perform(post("/oauth/token").header("Authorization", authorization)
+						.contentType(MediaType.APPLICATION_FORM_URLENCODED).param("username", username)
+						.param("password", password).param("grant_type", "password").param("scope", "read write")
+						.param("client_id", "myapp").param("client_secret", "XX001"))
+				.andExpect(status().isOk()).andExpect(content().contentType(contentType))
 				.andExpect(jsonPath("$.access_token", is(notNullValue())))
 				.andExpect(jsonPath("$.token_type", is(equalTo("bearer"))))
 				.andExpect(jsonPath("$.refresh_token", is(notNullValue())))
 				.andExpect(jsonPath("$.expires_in", is(greaterThan(4000))))
-				.andExpect(jsonPath("$.scope", is(equalTo("read write"))))
-				.andDo(print())
-				.andReturn().getResponse().getContentAsString();
+				.andExpect(jsonPath("$.scope", is(equalTo("read write")))).andDo(print()).andReturn().getResponse()
+				.getContentAsString();
 		AccessToken accessToken = objectMapper.readValue(content, AccessToken.class);
 		this.accessToken = accessToken.getAccess_token();
 	}
@@ -88,36 +80,14 @@ public class HelloControllerTest {
 		System.out.println(connectionSettings.getRemoteAddress());
 	}
 
-
 	@Test
 	public void createAccountTest() throws Exception {
 		Accounts accounts = new Accounts();
-		accounts.setName("wonwoo00");
-		accounts.setPassword("wonwoo00");
+		accounts.setName("won");
+		accounts.setPassword("won");
 		ResultActions createResult = createAccount(accounts);
-		createResult.andExpect(status().isOk());
-		String respones = createResult.andReturn().getResponse().getContentAsString();
-		Accounts resultAccounts = objectMapper.readValue(respones, Accounts.class);
-		ResultActions getResult = getAccount(resultAccounts.getId());
-		getResult.andExpect(status().isOk());
-		getResult.andExpect(jsonPath("$.name", is("wonwoo00")));
+		createResult.andExpect(status().isBadRequest());
 	}
-
-//	@Test
-//	public void createAccountDslTest() throws Exception {
-//		Accounts accounts = new Accounts();
-//		accounts.setName("wonwoo");
-//		accounts.setPassword("wonwoo123");
-//		ResultActions createResult = createAccount(accounts);
-//		createResult.andExpect(status().isOk());
-//		String respones = createResult.andReturn().getResponse().getContentAsString();
-//		Accounts resultAccounts = objectMapper.readValue(respones, Accounts.class);
-//		ResultActions getResult = mockMvc
-//				.perform(get("/accountsdsl/" + resultAccounts.getId()).contentType(MediaType.APPLICATION_JSON));
-//		getResult.andDo(print());
-//		getResult.andExpect(status().isOk());
-//		getResult.andExpect(jsonPath("$.name", is("wonwoo")));
-//	}
 
 	@Test
 	public void createAccountsTest() throws Exception {
@@ -132,35 +102,44 @@ public class HelloControllerTest {
 		accounts2.setPassword("young boss123");
 		ResultActions createResult2 = createAccount(accounts2);
 		createResult2.andExpect(status().isOk());
-
-		ResultActions getResult = mockMvc.perform(get("/accounts").header("Authorization", "Bearer " + accessToken).contentType(MediaType.APPLICATION_JSON));
-		getResult.andDo(print());
-		getResult.andExpect(status().isOk());
-
 	}
 
 	@Test
 	public void updateAccountsTest() throws Exception {
-		Accounts resultAccounts = new Accounts();
+		Accounts accounts = new Accounts();
+		accounts.setName("wonwooUpdate");
 
-
-		resultAccounts.setName("wonwooUpdate");
-
-		ResultActions updateResult = mockMvc.perform(put("/accounts/1").header("Authorization", "Bearer " + accessToken)
-				.contentType(MediaType.APPLICATION_JSON).content(objectMapper.writeValueAsString(resultAccounts)));
-		updateResult.andDo(print());
+		ResultActions updateResult = updateAccount(1L, accounts);
 		updateResult.andExpect(status().isOk());
 		ResultActions getResult = getAccount(1L);
 		getResult.andExpect(status().isOk());
 		getResult.andExpect(jsonPath("$.name", is("wonwooUpdate")));
 	}
+	
+	@Test
+	public void updateAccountsNotFoundExceptionTest() throws Exception {
+		Accounts accounts = new Accounts();
+		accounts.setName("wonwooUpdate");
+		ResultActions updateResult = updateAccount(1L, accounts);
+		updateResult.andExpect(status().isOk());
+		ResultActions getResult = getAccount(100L);
+		getResult.andExpect(status().isBadRequest());
+	}
 
 	@Test
 	public void deleteAccountsTest() throws Exception {
-		ResultActions deleteResult = mockMvc.perform(delete("/accounts/2").header("Authorization", "Bearer " + accessToken)
-				.contentType(MediaType.APPLICATION_JSON));
+		ResultActions deleteResult = mockMvc.perform(delete("/accounts/2")
+				.header("Authorization", "Bearer " + accessToken).contentType(MediaType.APPLICATION_JSON));
 		deleteResult.andDo(print());
 		deleteResult.andExpect(status().isOk());
+	}
+	
+	@Test
+	public void deleteAccountsNotFoundTest() throws Exception {
+		ResultActions deleteResult = mockMvc.perform(delete("/accounts/100")
+				.header("Authorization", "Bearer " + accessToken).contentType(MediaType.APPLICATION_JSON));
+		deleteResult.andDo(print());
+		deleteResult.andExpect(status().isBadRequest());
 	}
 
 	@Test
@@ -172,87 +151,58 @@ public class HelloControllerTest {
 	}
 
 	@Test
-	public void createAccount() throws Exception {
-		Accounts creatDto = new Accounts();
-		creatDto.setName("wonwoo1010");
-		creatDto.setPassword("wonwoo123");
-
-		ResultActions result = mockMvc.perform(post("/accounts").header("Authorization", "Bearer " + accessToken).contentType(MediaType.APPLICATION_JSON)
-				.content(objectMapper.writeValueAsString(creatDto)));
-
-		result.andDo(print());
-		result.andExpect(status().isOk());
-		result.andExpect(jsonPath("$.name", is("wonwoo1010")));
-
-		result = mockMvc.perform(post("/accounts").header("Authorization", "Bearer " + accessToken).contentType(MediaType.APPLICATION_JSON)
-				.content(objectMapper.writeValueAsString(creatDto)));
-
-		result.andDo(print());
-		result.andExpect(status().isBadRequest());
-		// result.andExpect(jsonPath("$.code",
-		// is("duplicated.username.exception")));
-	}
-
-	@Autowired
-	private AccountsService accountsService;
-
-	@Test
 	public void getAccountDuplicateExceptionTest() throws Exception {
 		Accounts accounts = new Accounts();
 		accounts.setName("wonwoo");
 		accounts.setPassword("wonwoo123");
-
-		ResultActions createResult = mockMvc.perform(post("/accounts").header("Authorization", "Bearer " + accessToken).contentType(MediaType.APPLICATION_JSON)
-				.content(objectMapper.writeValueAsString(accounts)));
-		createResult.andDo(print());
-
-		createResult = mockMvc.perform(post("/accounts").header("Authorization", "Bearer " + accessToken).contentType(MediaType.APPLICATION_JSON)
-				.content(objectMapper.writeValueAsString(accounts)));
-		createResult.andDo(print());
+		ResultActions createResult = createAccount(accounts);
 		createResult.andExpect(status().isBadRequest());
-		// createResult.andExpect(status().isOk());
-
-		// bug?
-		// javax.servpringframework.web.servlet.view.InternalResourceView.prepareForRendering(InternalResourceView.java:205)
-		// ResultActions createResult =
-		// mockMvc.perform(post("/accounts").contentType(MediaType.APPLICATION_JSON).content(objectMapper.writeValueAsString(accounts)));
-		// ResultActions createResult = mockMvc.perform(poslet.ServletException:
-		// Circular view path [accounts]: would dispatch back to the current
-		// handler URL [/accounts] again. Check your ViewResolver setup! (Hint:
-		// This may be the result of an unspecified view, due to default view
-		// name generation.)
-		// at
-		// org.st("/accounts/").contentType(MediaType.APPLICATION_JSON).content(objectMapper.writeValueAsString(accounts)));
-		// Accounts accounts1 = new Accounts();
-		// accounts1.setName("wonwoo");
-		// accounts1.setPassword("wonwoo555");
-		// ResultActions createResult1 = createAccount(accounts1);
-		//
-
 	}
 
 	private ResultActions createAccount(Accounts accounts) throws Exception {
-		ResultActions createResult = mockMvc.perform(post("/accounts").header("Authorization", "Bearer " + accessToken).contentType(MediaType.APPLICATION_JSON)
-				.content(objectMapper.writeValueAsString(accounts)));
+		ResultActions createResult = mockMvc.perform(post("/accounts").header("Authorization", "Bearer " + accessToken)
+				.contentType(MediaType.APPLICATION_JSON).content(objectMapper.writeValueAsString(accounts)));
 		createResult.andDo(print());
 		// createResult.andExpect(status().isOk());
 		return createResult;
 	}
 
 	private ResultActions getAccount(Long id) throws Exception {
-//		String accessToken = getAccessToken("wonwoo","pwadmin");
-		ResultActions getResult = mockMvc.perform(get("/accounts/" + id).header("Authorization", "Bearer " + accessToken).contentType(MediaType.APPLICATION_JSON));
+		ResultActions getResult = mockMvc.perform(get("/accounts/" + id)
+				.header("Authorization", "Bearer " + accessToken).contentType(MediaType.APPLICATION_JSON));
 		getResult.andDo(print());
-		// getResult.andExpect(status().isOk());
 		return getResult;
 	}
 
-
+	private ResultActions updateAccount(Long id, Accounts accounts) throws Exception {
+		ResultActions updateResult = mockMvc.perform(put("/accounts/" + id).header("Authorization", "Bearer " + accessToken)
+				.contentType(MediaType.APPLICATION_JSON).content(objectMapper.writeValueAsString(accounts)));
+		updateResult.andDo(print());
+		return updateResult;
+	}
 
 	@Test
 	public void getAccountScopeTest() throws Exception {
-		getAccount(1L).andExpect(status().isOk())
-					  .andDo(print());
+		getAccount(1L).andExpect(status().isOk()).andDo(print());
 	}
+	
 
+	// @Test
+	// public void createAccountDslTest() throws Exception {
+	// Accounts accounts = new Accounts();
+	// accounts.setName("wonwoo");
+	// accounts.setPassword("wonwoo123");
+	// ResultActions createResult = createAccount(accounts);
+	// createResult.andExpect(status().isOk());
+	// String respones =
+	// createResult.andReturn().getResponse().getContentAsString();
+	// Accounts resultAccounts = objectMapper.readValue(respones,
+	// Accounts.class);
+	// ResultActions getResult = mockMvc
+	// .perform(get("/accountsdsl/" +
+	// resultAccounts.getId()).contentType(MediaType.APPLICATION_JSON));
+	// getResult.andDo(print());
+	// getResult.andExpect(status().isOk());
+	// getResult.andExpect(jsonPath("$.name", is("wonwoo")));
+	// }
 }

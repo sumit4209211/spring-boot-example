@@ -1,6 +1,7 @@
 package me.wonwoo.advice;
 
 import me.wonwoo.exception.AccountsNotFoundException;
+import me.wonwoo.exception.BadRequestException;
 import me.wonwoo.exception.DuplicateException;
 import me.wonwoo.exception.bean.AdviceErrorRespones;
 
@@ -12,12 +13,12 @@ import org.springframework.web.bind.annotation.RestController;
 
 @ControllerAdvice
 @RestController
-public class BadException {
+public class GlobalException {
 
 	@ExceptionHandler(DuplicateException.class)
 	@ResponseStatus(HttpStatus.BAD_REQUEST)
 	public AdviceErrorRespones handleDuplicateKeyException(DuplicateException e) {
-		return setAdviceErrorRespones("0000", e.getKey() + " duplicate key", e.getMessage());
+		return setAdviceErrorRespones("duplicate.key", e.getKey() + " duplicate key", e.getMessage());
 	}
 
 	@ExceptionHandler(AccountsNotFoundException.class)
@@ -26,14 +27,20 @@ public class BadException {
 		return setAdviceErrorRespones("account.not.found", e.getId() + " not found", e.getMessage());
 	}
 
-	@ExceptionHandler(Exception.class)
+	@ExceptionHandler(BadRequestException.class)
 	@ResponseStatus(HttpStatus.BAD_REQUEST)
+	public AdviceErrorRespones handleBadRequestException(BadRequestException e) {
+		return setAdviceErrorRespones("invalid.parameters", e.getValue(), e.getValue() + " :" + e.getMessage());
+	}
+
+	@ExceptionHandler(Exception.class)
+	@ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
 	public AdviceErrorRespones handleException(Exception e) {
-		return setAdviceErrorRespones("null.pointer", "null pointer", e.getMessage());
+		return setAdviceErrorRespones("unknown.excpetion", "unknown excpetion", e.getMessage());
 	}
 
 	@ExceptionHandler(NullPointerException.class)
-	@ResponseStatus(HttpStatus.BAD_REQUEST)
+	@ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
 	public AdviceErrorRespones handleNullPointerException(NullPointerException e) {
 		return setAdviceErrorRespones("null.pointer", "null pointer", e.getMessage());
 	}
