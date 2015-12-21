@@ -23,7 +23,7 @@ import org.springframework.web.context.WebApplicationContext;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import me.wonwoo.account.Accounts;
+import me.wonwoo.blog.accounts.Accounts;
 import me.wonwoo.config.ConnectionSettings;
 import me.wonwoo.config.oauth2.AccessToken;
 
@@ -44,7 +44,7 @@ public class HelloControllerTest {
 	@Autowired
 	private FilterChainProxy springSecurityFilterChain;
 
-	public static final String username = "wonwoo";
+	public static final String username = "aoruqjfu@gmail.com";
 
 	public static final String password = "pwadmin";
 
@@ -81,9 +81,9 @@ public class HelloControllerTest {
 	}
 
 	@Test
-	public void createAccountTest() throws Exception {
+	public void createAccountBadRequestTest() throws Exception {
 		Accounts accounts = new Accounts();
-		accounts.setName("won");
+		accounts.setEmail("aoruqjfu@gmail.com");
 		accounts.setPassword("won");
 		ResultActions createResult = createAccount(accounts);
 		createResult.andExpect(status().isBadRequest());
@@ -92,43 +92,38 @@ public class HelloControllerTest {
 	@Test
 	public void createAccountsTest() throws Exception {
 		Accounts accounts = new Accounts();
-		accounts.setName("wonwoo12388");
+		accounts.setEmail("aoruqjfu@naver.com");
+		accounts.setFirst_name("wonwoo");
+		accounts.setLast_name("lee");
 		accounts.setPassword("wonwoo123");
 		ResultActions createResult = createAccount(accounts);
 		createResult.andExpect(status().isOk());
-
-		Accounts accounts2 = new Accounts();
-		accounts2.setName("young boss");
-		accounts2.setPassword("young boss123");
-		ResultActions createResult2 = createAccount(accounts2);
-		createResult2.andExpect(status().isOk());
 	}
 
 	@Test
 	public void updateAccountsTest() throws Exception {
 		Accounts accounts = new Accounts();
-		accounts.setName("wonwooUpdate");
-
+		accounts.setFirst_name("wonwooupdate");
 		ResultActions updateResult = updateAccount(1L, accounts);
 		updateResult.andExpect(status().isOk());
 		ResultActions getResult = getAccount(1L);
 		getResult.andExpect(status().isOk());
-		getResult.andExpect(jsonPath("$.name", is("wonwooUpdate")));
+		getResult.andExpect(jsonPath("$.first_name", is("wonwooupdate")));
 	}
 	
 	@Test
 	public void updateAccountsNotFoundExceptionTest() throws Exception {
 		Accounts accounts = new Accounts();
-		accounts.setName("wonwooUpdate");
-		ResultActions updateResult = updateAccount(1L, accounts);
-		updateResult.andExpect(status().isOk());
-		ResultActions getResult = getAccount(100L);
-		getResult.andExpect(status().isBadRequest());
+		accounts.setEmail("aoruqjfu@gmail.com");
+		accounts.setFirst_name("wonwooUpdate");
+		accounts.setLast_name("lee");
+		ResultActions updateResult = updateAccount(100L, accounts);
+		updateResult.andExpect(status().isBadRequest());
 	}
 
 	@Test
 	public void deleteAccountsTest() throws Exception {
-		ResultActions deleteResult = mockMvc.perform(delete("/accounts/2")
+		ResultActions deleteResult = mockMvc.perform(delete("/accounts/1")
 				.header("Authorization", "Bearer " + accessToken).contentType(MediaType.APPLICATION_JSON));
 		deleteResult.andDo(print());
 		deleteResult.andExpect(status().isOk());
@@ -153,7 +148,7 @@ public class HelloControllerTest {
 	@Test
 	public void getAccountDuplicateExceptionTest() throws Exception {
 		Accounts accounts = new Accounts();
-		accounts.setName("wonwoo");
+		accounts.setEmail("aoruqjfu@gmail.com");
 		accounts.setPassword("wonwoo123");
 		ResultActions createResult = createAccount(accounts);
 		createResult.andExpect(status().isBadRequest());

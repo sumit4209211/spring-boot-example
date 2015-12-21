@@ -1,4 +1,4 @@
-package me.wonwoo.account;
+package me.wonwoo.blog.accounts;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -18,7 +18,7 @@ public class AccountsService {
 	private PasswordEncoder passwordEncoder;
 
 	@Autowired
-	private AccountRepository accountRepository;
+	private AccountsRepository accountRepository;
 
 	public Accounts getAccount(Long id) {
 		Accounts accounts = accountRepository.findOne(id);
@@ -33,10 +33,11 @@ public class AccountsService {
 	}
 
 	public Accounts saveAccounts(Accounts accounts) {
-		if (getAccount(accounts.getName()) != null) {
-			throw new DuplicateException(accounts.getName());
+		if (getAccount(accounts.getEmail()) != null) {
+			throw new DuplicateException(accounts.getEmail());
 		}
 		accounts.setPassword(passwordEncoder.encode(accounts.getPassword()));
+		accounts.setStatus("001");
 		return accountRepository.save(accounts);
 	}
 
@@ -45,13 +46,20 @@ public class AccountsService {
 		if (getAccounts == null) {
 			throw new AccountsNotFoundException(id);
 		}
-		getAccounts.setName(accounts.getName());
-		getAccounts.setPassword(passwordEncoder.encode(accounts.getPassword()));
+		if(accounts.getPassword() != null){
+			getAccounts.setPassword(passwordEncoder.encode(accounts.getPassword()));
+		}
+		if(accounts.getFirst_name() != null){
+			getAccounts.setFirst_name(accounts.getFirst_name());
+		}
+		if(accounts.getLast_name() != null){
+			getAccounts.setLast_name(accounts.getLast_name());
+		}
 		return accountRepository.save(getAccounts);
 	}
 
-	public Accounts getAccount(String name) {
-		return accountRepository.findByname(name);
+	public Accounts getAccount(String username) {
+		return accountRepository.findByemail(username);
 	}
 
 	public void deleteAccounts(Long id) {

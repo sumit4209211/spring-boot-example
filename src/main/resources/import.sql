@@ -1,3 +1,1 @@
--- insert into account(id, name, password) values (1,'wonwoo','pwadmin');
--- insert into account(id, name, password) values (2,'user','','pwuser');
-
+insert into accounts(email, first_name, last_name,status, password) values ('aoruqjfu@gmail.com','wonwoo', 'lee','001','$2a$10$nfC6f2Ka855DYshbOuEJbeZtpx4lSLwhZEVh6XcySRji/3IbZTr6O');

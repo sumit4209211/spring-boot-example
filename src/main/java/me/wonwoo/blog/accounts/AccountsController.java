@@ -1,4 +1,4 @@
-package me.wonwoo.account;
+package me.wonwoo.blog.accounts;
 
 import javax.validation.Valid;
 
