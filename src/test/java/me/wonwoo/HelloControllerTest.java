@@ -44,23 +44,26 @@ public class HelloControllerTest {
 	@Autowired
 	private FilterChainProxy springSecurityFilterChain;
 
-	public static final String username = "aoruqjfu@gmail.com";
+	private static final String username = "aoruqjfu@gmail.com";
 
-	public static final String password = "pwadmin";
+	private static final String password = "pwadmin";
 
-	public String accessToken;
+	private String accessToken;
+
+	private String client_id = "wonwooapp";
+	private String client_secret = "XX0000001";
 
 	@Before
 	public void setUp() throws Exception {
 		mockMvc = MockMvcBuilders.webAppContextSetup(wac).addFilter(springSecurityFilterChain).build();
-		String authorization = "Basic " + new String(Base64Utils.encode("myapp:XX001".getBytes()));
+		String authorization = "Basic " + new String(Base64Utils.encode((client_id + ":" + client_secret).getBytes()));
 		String contentType = MediaType.APPLICATION_JSON + ";charset=UTF-8";
 		String content = mockMvc
 				.perform(post("/oauth/token").header("Authorization", authorization)
 						.contentType(MediaType.APPLICATION_FORM_URLENCODED).param("username", username)
 						.param("password", password).param("grant_type", "password").param("scope", "read write")
-						.param("client_id", "myapp").param("client_secret", "XX001"))
-				.andExpect(status().isOk()).andExpect(content().contentType(contentType))
+						.param("client_id", client_id).param("client_secret", client_secret))
+				.andDo(print()).andExpect(status().isOk()).andExpect(content().contentType(contentType))
 				.andExpect(jsonPath("$.access_token", is(notNullValue())))
 				.andExpect(jsonPath("$.token_type", is(equalTo("bearer"))))
 				.andExpect(jsonPath("$.refresh_token", is(notNullValue())))
@@ -110,7 +113,7 @@ public class HelloControllerTest {
 		getResult.andExpect(status().isOk());
 		getResult.andExpect(jsonPath("$.first_name", is("wonwooupdate")));
 	}
-	
+
 	@Test
 	public void updateAccountsNotFoundExceptionTest() throws Exception {
 		Accounts accounts = new Accounts();
@@ -128,7 +131,7 @@ public class HelloControllerTest {
 		deleteResult.andDo(print());
 		deleteResult.andExpect(status().isOk());
 	}
-	
+
 	@Test
 	public void deleteAccountsNotFoundTest() throws Exception {
 		ResultActions deleteResult = mockMvc.perform(delete("/accounts/100")
@@ -170,8 +173,9 @@ public class HelloControllerTest {
 	}
 
 	private ResultActions updateAccount(Long id, Accounts accounts) throws Exception {
-		ResultActions updateResult = mockMvc.perform(put("/accounts/" + id).header("Authorization", "Bearer " + accessToken)
-				.contentType(MediaType.APPLICATION_JSON).content(objectMapper.writeValueAsString(accounts)));
+		ResultActions updateResult = mockMvc
+				.perform(put("/accounts/" + id).header("Authorization", "Bearer " + accessToken)
+						.contentType(MediaType.APPLICATION_JSON).content(objectMapper.writeValueAsString(accounts)));
 		updateResult.andDo(print());
 		return updateResult;
 	}
@@ -180,7 +184,6 @@ public class HelloControllerTest {
 	public void getAccountScopeTest() throws Exception {
 		getAccount(1L).andExpect(status().isOk()).andDo(print());
 	}
-	
 
 	// @Test
 	// public void createAccountDslTest() throws Exception {

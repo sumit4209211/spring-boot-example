@@ -8,8 +8,6 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class AdviceErrorRespones {
-	private String code;
-	private String message;
-	private String detail;
-
+	private String error;
+	private String error_description;
 }
