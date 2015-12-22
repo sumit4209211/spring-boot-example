@@ -74,10 +74,12 @@ public class OAuth2ServerConfiguration {
 //              .authorizeRequests()
 //              .antMatchers("/accounts/*").access("#oauth2.hasScope('write')")
 //              .antMatchers("/accounts").authenticated();
-			  http
-              .authorizeRequests()
-              .antMatchers("/accounts/*", "/accounts").hasRole("ADMIN")
-              .antMatchers("/posts/*"," /posts").access("#oauth2.hasScope('read')");
+//			  http
+//              .authorizeRequests()
+//              .antMatchers("/accounts/*", "/accounts").hasRole("ADMIN")
+//              .antMatchers("/posts/*"," /posts").access("#oauth2.hasScope('read')");
+			
+			http.authorizeRequests().antMatchers("/**").permitAll();
 		}
 	}
 

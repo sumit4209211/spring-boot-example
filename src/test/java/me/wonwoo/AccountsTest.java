@@ -31,7 +31,7 @@ import me.wonwoo.config.oauth2.AccessToken;
 @SpringApplicationConfiguration(classes = Application.class)
 @WebAppConfiguration
 @Transactional
-public class HelloControllerTest {
+public class AccountsTest {
 
 	@Autowired
 	private WebApplicationContext wac;

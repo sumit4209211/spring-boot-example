@@ -62,6 +62,11 @@
 			<groupId>com.jayway.jsonpath</groupId>
 			<artifactId>json-path</artifactId>
 		</dependency>
+		
+<!-- 		<dependency> -->
+<!-- 			<groupId>mysql</groupId> -->
+<!-- 			<artifactId>mysql-connector-java</artifactId> -->
+<!-- 		</dependency> -->
 
 		<!-- <dependency> -->
 		<!-- <groupId>com.mysema.querydsl</groupId> -->
@@ -112,7 +117,7 @@
 			<artifactId>bootstrap</artifactId>
 			<version>4.0.0-alpha</version>
 		</dependency>
-		
+
 		<dependency>
 			<groupId>org.webjars.npm</groupId>
 			<artifactId>babel</artifactId>
@@ -140,6 +145,10 @@
 			<groupId>org.projectlombok</groupId>
 			<artifactId>lombok</artifactId>
 			<version>1.16.6</version>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-social-facebook</artifactId>
 		</dependency>
 	</dependencies>
 	<build>
