@@ -86,7 +86,7 @@ public class AccountsTest {
 	@Test
 	public void createAccountBadRequestTest() throws Exception {
 		Accounts accounts = new Accounts();
-		accounts.setEmail("aoruqjfu@gmail.com");
+		accounts.setEmail("ao");
 		accounts.setPassword("won");
 		ResultActions createResult = createAccount(accounts);
 		createResult.andExpect(status().isBadRequest());

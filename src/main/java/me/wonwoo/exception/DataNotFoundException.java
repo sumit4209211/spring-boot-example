@@ -1,6 +1,6 @@
 package me.wonwoo.exception;
 
-public class AccountsNotFoundException extends RuntimeException {
+public class DataNotFoundException extends RuntimeException {
 
 	/**
 	 * 
@@ -9,7 +9,7 @@ public class AccountsNotFoundException extends RuntimeException {
 
 	private Long id;
 
-	public AccountsNotFoundException(Long id) {
+	public DataNotFoundException(Long id) {
 		this.id = id;
 	}
 

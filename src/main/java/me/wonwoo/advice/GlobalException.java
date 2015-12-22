@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
-import me.wonwoo.exception.AccountsNotFoundException;
+import me.wonwoo.exception.DataNotFoundException;
 import me.wonwoo.exception.BadRequestException;
 import me.wonwoo.exception.DuplicateException;
 import me.wonwoo.exception.bean.AdviceErrorRespones;
@@ -22,9 +22,9 @@ public class GlobalException {
 		return setAdviceErrorRespones("duplicate.key", e.getKey() + " duplicate key");
 	}
 
-	@ExceptionHandler(AccountsNotFoundException.class)
+	@ExceptionHandler(DataNotFoundException.class)
 	@ResponseStatus(HttpStatus.BAD_REQUEST)
-	public AdviceErrorRespones handleAccountNotFoundException(AccountsNotFoundException e) {
+	public AdviceErrorRespones handleAccountNotFoundException(DataNotFoundException e) {
 		return setAdviceErrorRespones("account.not.found", e.getId() + " not found");
 	}
 

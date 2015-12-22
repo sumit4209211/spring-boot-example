@@ -1,5 +1,7 @@
 package me.wonwoo.blog.accounts;
 
+import java.util.Date;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -7,7 +9,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import me.wonwoo.exception.AccountsNotFoundException;
+import me.wonwoo.exception.DataNotFoundException;
 import me.wonwoo.exception.DuplicateException;
 
 @Service
@@ -23,7 +25,7 @@ public class AccountsService {
 	public Accounts getAccount(Long id) {
 		Accounts accounts = accountRepository.findOne(id);
 		if (accounts == null) {
-			throw new AccountsNotFoundException(id);
+			throw new DataNotFoundException(id);
 		}
 		return accounts;
 	}
@@ -36,6 +38,7 @@ public class AccountsService {
 		if (getAccount(accounts.getEmail()) != null) {
 			throw new DuplicateException(accounts.getEmail());
 		}
+		accounts.setJoined(new Date());
 		accounts.setPassword(passwordEncoder.encode(accounts.getPassword()));
 		accounts.setStatus("001");
 		return accountRepository.save(accounts);
@@ -44,7 +47,7 @@ public class AccountsService {
 	public Accounts updateAccounts(Long id, Accounts accounts) {
 		Accounts getAccounts = getAccount(id);
 		if (getAccounts == null) {
-			throw new AccountsNotFoundException(id);
+			throw new DataNotFoundException(id);
 		}
 		if(accounts.getPassword() != null){
 			getAccounts.setPassword(passwordEncoder.encode(accounts.getPassword()));
@@ -65,7 +68,7 @@ public class AccountsService {
 	public void deleteAccounts(Long id) {
 		Accounts getAccounts = getAccount(id);
 		if (getAccounts == null) {
-			throw new AccountsNotFoundException(id);
+			throw new DataNotFoundException(id);
 		}
 		accountRepository.delete(id);
 	}

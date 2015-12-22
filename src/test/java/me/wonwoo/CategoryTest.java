@@ -84,4 +84,14 @@ public class CategoryTest {
 		createResult.andDo(print());
 		createResult.andExpect(status().isOk());
 	}
+	
+	@Test
+	public void getCategoryTest() throws JsonProcessingException, Exception{
+		categoryCreateTest();
+		ResultActions createResult = mockMvc.perform(get("/category/1").header("Authorization", "Bearer " + accessToken)
+				.contentType(MediaType.APPLICATION_JSON));
+		createResult.andDo(print());
+		createResult.andExpect(status().isOk());
+	}
+	
 }
