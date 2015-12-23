@@ -25,17 +25,17 @@ public class Post {
 	@Id
 	@GeneratedValue
 	private Long id;
-	
+
 	private String title;
 	private String content;
-	
+
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date regDate;
-	
+
 	private String email;
-	
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name="categoryId", insertable = true, updatable = false)
+
+	@ManyToOne(fetch = FetchType.EAGER, optional=false)
+	@JoinColumn(name = "categoryId", insertable = true, updatable = false)
 	private Category category;
-	
+
 }

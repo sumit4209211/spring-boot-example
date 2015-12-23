@@ -31,8 +31,11 @@ public class PostService {
 		Category category = new Category();
 		category.setCategoryId(categoryId);
 		Page<Post> posts = postRepository.findByCategory(category, pageable);
-		System.out.println(posts);
 		return posts;
+	}
+
+	public Page<Post> findAll(Pageable pageable) {
+		return postRepository.findAll(pageable);
 	}
 	
 }

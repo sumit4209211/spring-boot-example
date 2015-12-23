@@ -1,3 +1,4 @@
+const {Router, Route, Link} = ReactRouter;
 
 var HeadNav = React.createClass({
 	render : function(){
@@ -33,68 +34,68 @@ var HeadNav = React.createClass({
 });
 
 var Content = React.createClass({
+	getInitialState: function() {
+		return {
+			posts : [],
+		};
+	},
+	componentDidMount: function() {
+		$.get(this.props.url, function(result) {
+			var content = result.content;
+			this.setState({
+				posts: content
+			});
+		}.bind(this));
+	},
 	render : function(){
 		return (
-			<div className="col-md-8">
+			<ContentPost data={this.state.posts} />
+		);
+	}
+});
 
+var ContentPost = React.createClass({
+	render :function(){
+		var PostNode = this.props.data.map(function (post) {
+			return (
+				<div>
+					<h2>
+						<Link to="/about">{post.title}</Link>
+					</h2>
+					<p className="lead">
+						by <a href="index.php">{post.email}</a>
+					</p>
+					<p><span className="glyphicon glyphicon-time"></span> Posted on August 28, 2013 at 10:00 PM</p>
+					<hr>
+	                    <img className="img-responsive" src="http://placehold.it/900x300" alt=""/>
+	                </hr>
+	                    <p>{post.content}</p>
+                        <a className="btn btn-primary" href="#">Read More <span className="glyphicon glyphicon-chevron-right"></span></a>
+	                
+                </div>
+            )
+		});
+		return (
+			<div className="col-md-8">
 				<h1 className="page-header">
 					Page Heading
 				</h1>
-				<h2>
-					<a href="#">Blog Post Title</a>
-				</h2>
-				<p className="lead">
-					by <a href="index.php">Start Bootstrap</a>
-				</p>
-				<p><span className="glyphicon glyphicon-time"></span> Posted on August 28, 2013 at 10:00 PM</p>
+				{PostNode}
 				<hr>
-                    <img className="img-responsive" src="http://placehold.it/900x300" alt=""/>
-                </hr>
-                    <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Dolore, veritatis, tempora, necessitatibus inventore nisi quam quia repellat ut tempore laborum possimus eum dicta id animi corrupti debitis ipsum officiis rerum.</p>
-                        <a className="btn btn-primary" href="#">Read More <span className="glyphicon glyphicon-chevron-right"></span></a>
-                <hr>
-                    <h2>
-                        <a href="#">Blog Post Title</a>
-                    </h2>
-                    <p className="lead">
-                        by <a href="index.php">Start Bootstrap</a>
-                    </p>
-                    <p>
-                        <span className="glyphicon glyphicon-time"></span> Posted on August 28, 2013 at 10:45 PM</p>
-                </hr>
-                        <img className="img-responsive" src="http://placehold.it/900x300" alt=""/>
-                <hr>
-                    <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Quibusdam, quasi, fugiat, asperiores harum voluptatum tenetur a possimus nesciunt quod accusamus saepe tempora ipsam distinctio minima dolorum perferendis labore impedit voluptates!</p>
-                        <a class="btn btn-primary" href="#">Read More <span className="glyphicon glyphicon-chevron-right"></span></a>
-                </hr>
-
-                    <h2>
-                        <a href="#">Blog Post Title</a>
-                    </h2>
-                    <p className="lead">
-                        by <a href="index.php">Start Bootstrap</a>
-                    </p>
-                    <p>
-                        <span className="glyphicon glyphicon-time"></span> Posted on August 28, 2013 at 10:45 PM</p>
-                <hr>
-                    <img className="img-responsive" src="http://placehold.it/900x300" alt=""/>
-                </hr>
-                    <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Cupiditate, voluptates, voluptas dolore ipsam cumque quam veniam accusantium laudantium adipisci architecto itaque dicta aperiam maiores provident id incidunt autem. Magni, ratione.</p>
-                    <a className="btn btn-primary" href="#">Read More <span className="glyphicon glyphicon-chevron-right"></span></a>
-                <hr>
-                    <ul className="pager">
-                    <li className="previous">
-                    <a href="#">&larr; Older</a>
-                    </li>
-                    <li className="next">
-                    <a href="#">Newer &rarr;</a>
-                    </li>
-                </ul>
-                </hr>
-            </div>
-		)
+					<ul className="pager">
+		                <li className="previous">
+		                	<a href="#">&larr; Older</a>
+		                </li>
+		                <li className="next">
+		                	<a href="#">Newer &rarr;</a>
+		                </li>
+		            </ul>
+	            </hr>
+			</div>
+		);
 	}
 });
+
 
 var Search = React.createClass({
    render :function(){
@@ -177,76 +178,150 @@ var Footer = React.createClass({
    }
 });
 
-var Main = React.createClass({
+const Main = React.createClass({
 	render : function(){
 		return (
 			<div>
-				<HeadNav />
+				<HeadNav url=""/>
                 <div className="container">
                     <div className="row">
-                        <Content />
+                        <Content url="/post"/>
                         <LeftNav />
                     </div>
                     <Footer />
                 </div>
+                {this.props.children}
 			</div>
 		)
 	}
 });
 
+const App = React.createClass({
+	render : function(){
+		return (
+			<div>123</div>
+		)
+	}
+});
+const About = React.createClass({
+	componentDidMount: function() {
+		console.log(this.props.router);
+	},
+	render : function(){
+		return (
+			<div>1255555555555553</div>
+		)
+	}
+});
+const Users = React.createClass({
+	render : function(){
+		return (
+			<div>12zzzzzzzzzzzzzz3</div>
+		)
+	}
+})
 
-ReactDOM.render(
-	<Main />, document.body
-);
+ReactDOM.render((
+  <Router>
+    <Route path="/" component={Main}>
+      <Route path="about" component={About} />
+      <Route path="inbox" component={Users}>
+      </Route>
+    </Route>
+  </Router>
+), document.body)
+//
+//ReactDOM.render((
+//	<Router>
+//		<Route path="/" component={App}>
+//			<Route path="content" component={About} />
+//			<Route path="login" component={Users} />
+//		</Route>
+//	</Router>
+//), document.body);
+
+//ReactDOM.render((
+//	<div>
+//		<Route path="/" component={App} />
+//		<Route path="about" component={About} />
+//		<Route path="users" component={Users} />
+//		<Route path="*" component={App} />
+//	</div>
+//	), document.body
+//);
+
+
+//var Application = React.createClass({
+//render : function(){
+//	return (
+//		<div>
+//		 
+//	  </div>
+//  )
+//}
+//});
+
+//var routes = (
+//<Route path="/" handler={Main}>
+//<Route path="comments" handler={App}/>
+//</Route>
+//);
+//
+//ReactRouter.run(routes, function (Handler) {
+//React.render(<Handler/>, document.body);
+//});
+
+
+
 
 //ReactDOM.render(
 //	<HeadNav url="/accounts" />, document.body
 //);
 
 
-
-var Accounts = React.createClass({
-	  getInitialState: function() {
-	    return {
-	    	accounts : [],
-	    };
-  },
-
-  componentDidMount: function() {
-    $.get(this.props.url, function(result) {
-      var accounts = result;
-      	console.log(this.state.accounts)
-	  this.setState({
-		  accounts: accounts.content
-	  });
-    }.bind(this));
-  },
-
-  render: function() {
-	  return (
-	      <div>
-	        <AccountList data={this.state.accounts}/>
-	      </div>
-	  );
-   }
-});
-
-var AccountList = React.createClass({
-		render: function() {
-			var AccountsNode = this.props.data.map(function (account) {
-				return (
-				<div>
-					{account.last_name}
-					{account.id}
-				</div>
-			);
-		});
-		return (
-			<div className="accountList">
-				{AccountsNode}
-			</div>
-		);
-	}
-});
+//
+//var Accounts = React.createClass({
+//  getInitialState: function() {
+//	    return {
+//	    	accounts : [],
+//	    };
+//  },
+//
+//  componentDidMount: function() {
+//    $.get(this.props.url, function(result) {
+//      var accounts = result;
+//      	console.log(this.state.accounts)
+//	  this.setState({
+//		  accounts: accounts.content
+//	  });
+//    }.bind(this));
+//  },
+//
+//  render: function() {
+//	  return (
+//	      <div>
+//	        <AccountList data={this.state.accounts}/>
+//	      </div>
+//	  );
+//   }
+//});
+//
+//var AccountList = React.createClass({
+//		render: function() {
+//			var AccountsNode = this.props.data.map(function (account) {
+//				return (
+//				<div>
+//					{account.last_name}
+//					{account.id}
+//				</div>
+//			);
+//		});
+//		return (
+//			<div className="accountList">
+//				{AccountsNode}
+//			</div>
+//		);
+//	}
+//});
 
 

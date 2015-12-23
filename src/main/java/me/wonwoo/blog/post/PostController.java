@@ -30,6 +30,12 @@ public class PostController {
 		return new ResponseEntity<>(post, HttpStatus.OK);
 	}
 	
+	@RequestMapping(value = "/post", method = RequestMethod.GET)
+	public ResponseEntity<?> getPosts(Pageable pageable) {
+		Page<Post> post = postService.findAll(pageable);
+		return new ResponseEntity<>(post, HttpStatus.OK);
+	}
+	
 	@RequestMapping(value = "/post/category/{id}", method = RequestMethod.GET)
 	public ResponseEntity<?> getPostCategory(@PathVariable Long id, Pageable pageable) {
 		Page<Post> posts = postService.findByCategory(id, pageable);
