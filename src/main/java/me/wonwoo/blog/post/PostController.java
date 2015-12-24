@@ -23,7 +23,7 @@ public class PostController {
 
 	@Autowired
 	private PostService postService;
-
+	
 	@RequestMapping(value = "/post/{id}", method = RequestMethod.GET)
 	public ResponseEntity<?> getPost(@PathVariable Long id) {
 		Post post = postService.findOne(id);

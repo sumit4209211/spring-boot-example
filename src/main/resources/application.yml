@@ -20,6 +20,8 @@ spring.jpa.properties.hibernate.dialect: org.hibernate.dialect.MySQL5Dialect
 #spring.datasource.username: root
 #spring.datasource.password: ******
 #spring.datasource.driverClassName: com.mysql.jdbc.Driver
+spring.social.facebook.appId: 123123123123
+spring.social.facebook.appSecret: 12354444
 
 spring.redis.host: aoruqjfu.fun25.co.kr
 spring.redis.port: 18808
