@@ -1,19 +1,20 @@
 var React = require("react");
+var Router = require('react-router');
+var Main = require('./components/Main');
+var BlogMain = require('./components/BlogMain');
 var $ = require("jquery");
 
-var App = React.createClass({
-    render() {
-        return (
-            <h1>Hello {this.state.name}</h1>
-        );
-    },
-    getInitialState() {
-        return {name: "World"};
-    }
+var Route = Router.Route;
+var DefaultRoute = Router.DefaultRoute;
 
-});
-
-React.render(
-    <App/>,
-    document.getElementById('app')
+var routes = (
+    <Route handler={Main}>
+        <DefaultRoute name="blogMain" handler={BlogMain} />
+    </Route>
 );
+
+var router = Router.create({ routes: routes });
+
+router.run((Root) => {
+    React.render(<Root/>, document.getElementById('app'));
+});
