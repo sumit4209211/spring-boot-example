@@ -11,11 +11,11 @@ class BlogMain extends React.Component{
     render () {
         return (
             <div>
-                <HeadNav url=""/>
+                <HeadNav />
                 <div className="container">
                     <div className="container">
                         <div className="row">
-                            <Contents url="/post"/>
+                        	{this.props.children}
                             <LeftNav />
                         </div>
                         <Footer />

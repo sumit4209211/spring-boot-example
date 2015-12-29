@@ -6,7 +6,7 @@ var EventEmitter = require('events').EventEmitter;
 var assign = require('object-assign');
 
 var CHANGE_EVENT = 'change',
-    _posts = [];
+    _posts = [] , _post;;
 
 /**
  * Set the values for categories that will be used
@@ -16,38 +16,35 @@ function setPosts(posts) {
 	_posts = posts;
 }
 
+function setPost(post) {
+	_post = post;
+}
+
 var PostsStore = assign({}, EventEmitter.prototype, {
 
-  /**
-   * Emits change event.
-   */
   emitChange: function () {
     this.emit(CHANGE_EVENT);
   },
 
-  /**
-   * Adds a change listener.
-   *
-   * @param {function} callback Callback function.
-   */
   addChangeListener: function (callback) {
     this.on(CHANGE_EVENT, callback);
   },
 
-  /**
-   * Removes a change listener.
-   *
-   * @param {function} callback Callback function.
-   */
   removeChangeListener: function (callback) {
     this.removeListener(CHANGE_EVENT, callback);
   },
 
-  /**
-   * Return the value for categories.
-   */
   getPosts: function () {
     return _posts;
+  },
+  
+  getPost: function (id) {
+	 for(var i = 0; i < _posts.length; i++){
+		 if(_posts[i].id == id){
+			 return _posts[i];
+		 }
+	 }
+	 return {};
   }
 });
 
@@ -58,7 +55,6 @@ PostsStore.dispatchToken = Dispatcher.register(function (payload) {
     case ActionConstants.RECEIVE_POSTS:
       setPosts(action.posts.content);
       break;
-
     default:
       return true;
   }

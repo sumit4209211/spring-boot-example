@@ -1,19 +1,10 @@
-var React = require("react");
-var Router = require('react-router');
-var Main = require('./components/Main');
-var BlogMain = require('./components/BlogMain');
+import React from 'react';
+import { createHistory, createHashHistory } from 'history';
+import Root from './components/Main';
 
-var Route = Router.Route;
-var DefaultRoute = Router.DefaultRoute;
+const appEl = document.getElementById('app');
+// Use hash location for Github Pages
+// but switch to HTML5 history locally.
+const history = process.env.NODE_ENV === 'production' ? createHashHistory() : createHistory();
 
-var routes = (
-    <Route handler={Main}>
-        <DefaultRoute name="blogMain" handler={BlogMain} />
-    </Route>
-);
-
-var router = Router.create({ routes: routes });
-
-router.run((Root) => {
-    React.render(<Root/>, document.getElementById('app'));
-});
+React.render(<Root history={history} />, appEl);

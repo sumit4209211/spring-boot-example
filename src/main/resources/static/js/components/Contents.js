@@ -5,6 +5,8 @@ var React = require('react');
 var PostsStore = require('../stores/PostsStore');
 var PostsActionCreator = require('../actions/PostsActionCreator');
 
+var Link = require('react-router').Link
+
 class Contents extends React.Component{
 
     constructor(props) {
@@ -49,7 +51,7 @@ class Contents extends React.Component{
                             <img className="img-responsive" src="http://placehold.it/900x300" alt=""/>
                         </hr>
                         <p>{post.content}</p>
-                        <a className="btn btn-primary" href="#">Read More <span className="glyphicon glyphicon-chevron-right"></span></a>
+                        <Link className="btn btn-primary" to={`/content/${post.id}`}>Read More <span className="glyphicon glyphicon-chevron-right"></span></Link>
                         <hr></hr>
                     </div>
                 )
