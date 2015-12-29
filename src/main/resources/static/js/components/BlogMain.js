@@ -7,9 +7,7 @@ var Footer = require('./Footer');
 var LeftNav = require('./LeftNav');
 var Contents = require('./Contents');
 
-
 class BlogMain extends React.Component{
-
     render () {
         return (
             <div>

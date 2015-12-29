@@ -2,7 +2,6 @@ var React = require("react");
 var Router = require('react-router');
 var Main = require('./components/Main');
 var BlogMain = require('./components/BlogMain');
-var $ = require("jquery");
 
 var Route = Router.Route;
 var DefaultRoute = Router.DefaultRoute;

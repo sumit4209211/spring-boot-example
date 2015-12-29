@@ -1,0 +1,4 @@
+module.exports = {
+  RECEIVE_POSTS: 'RECEIVE_POSTS',
+  RECEIVE_ERROR: 'RECEIVE_ERROR'
+};
