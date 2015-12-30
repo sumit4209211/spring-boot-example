@@ -4,7 +4,6 @@
   "description": "Spring boot React example",
   "main": "/src/main/resources/statics/js/app.js",
   "scripts" :{
-        "webpack": "webpack -p",
         "cjs": "webpack --config webpack.config.js"
   },
   "dependencies": {
