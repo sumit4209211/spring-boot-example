@@ -26,12 +26,6 @@ class Main extends Component {
 	      </Router>
 	   );
    }
-
 }
 
-class About extends Component{
-  render() {
-    return <h3>About</h3>
-  }
-}
 module.exports = Main;

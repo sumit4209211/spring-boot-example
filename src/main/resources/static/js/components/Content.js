@@ -4,6 +4,7 @@
 var React = require('react');
 var PostsStore = require('../stores/PostsStore');
 var PostsActionCreator = require('../actions/PostsActionCreator');
+var Mark = require('./Mark');
 
 
 class Content extends React.Component{
@@ -43,7 +44,7 @@ class Content extends React.Component{
     	console.log(this.state.post.title);
 		return (
     			<div className="col-md-8">
- 				<h1>{this.state.post.title}</h1>
+ 					<h1>{this.state.post.title}</h1>
  				<p className="lead">
  					by <a href="#">{this.state.post.email}</a>
  				</p>
@@ -57,6 +58,7 @@ class Content extends React.Component{
  				<img className="img-responsive" src="http://placehold.it/900x300" alt=""/>
  				<hr>
  					<p className="lead">{this.state.post.content}</p>
+ 					<Mark />
  				</hr>
  			</div>
         );
