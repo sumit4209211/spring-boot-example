@@ -19,6 +19,7 @@
     "highlight.js" : "^9.0.0",
     "css-loader": "^0.16.0",
     "webpack": "^1.11.0",
+    "style-loader": "^0.12.3",
     "flux": "^2.0.1",
     "object-assign": "^2.0.0",
     "es6-promise": "^2.0.1",

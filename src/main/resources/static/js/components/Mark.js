@@ -6,6 +6,9 @@ var Markdown = require('react-remarkable');
 var Remarkable = require('remarkable');
 var hljs = require('highlight.js') 
 
+require('../../css/default.css');
+require('../../css/markdown.css');
+
 
 var md = new Remarkable('full', {
   html:         false,        // Enable HTML tags in source
@@ -46,27 +49,71 @@ class Mark extends React.Component{
         	outputValue : ""
         };
     }
-	componentDidMount() {
-		console.log(md.render('```java public static void main(){ }```'));
-	}
 	handleChange(e) {
-		this.setState({outputValue: md.render(e.target.value)});
-		console.log(md.render(e.target.value));
+		var source = document.getElementsByClassName("source")[0].value;
+	    document.getElementsByClassName("result-html")[0].innerHtml = md.render(source);
+	    try {
+	      if (source) {
+	        // serialize state - source and options
+	        permalink.href = '#md64=' + window.btoa(encodeURI(JSON.stringify({
+	          source: source,
+	          defaults: _.omit(defaults, 'highlight')
+	        })));
+	      } else {
+	        permalink.href = '';
+	      }
+	    } catch (__) {
+	      permalink.href = '';
+	    }
+		this.setState({outputValue: md.render(source)});
 	}
   render() {
     return (
-      <div>
-      <textarea
-	      onChange={this.handleChange}
-	      ref="textarea"
-	      value={this.state.inputValue} />
-	      <div>
-	      	{this.state.outputValue} 
+		<div className="container full-height">
+	      	<div className="row full-height">
+	      		<div className="col-xs-6 full-height">
+	      			<div className="demo-control"><a href="#" className="source-clear">clear</a><a id="permalink" href="./" title="Share this snippet as link"><strong>permalink</strong></a></div>
+	      				<textarea className="source full-height" ref="textarea" onChange={this.handleChange.bind(this)}>
+	      				</textarea>
+      			</div>
+      				<section className="col-xs-6 full-height">
+	      				<div className="demo-control"><a href="#" data-result-as="html">html</a><a href="#" data-result-as="src">source</a><a href="#" data-result-as="debug">debug</a></div>
+	      				<div className="result-html full-height" dangerouslySetInnerHTML={{__html: this.state.outputValue}}></div>
+	      				<pre className="result-src full-height"><code className="result-src-content full-height"></code></pre>
+	      				<pre className="result-debug full-height"><code className="result-debug-content full-height"></code></pre>
+      				</section>
+	        </div>
 	      </div>
-      </div>
-      
     );
   }
 }
 
+//var defaults = {
+//    html:         false,        // Enable HTML tags in source
+//    xhtmlOut:     false,        // Use '/' to close single tags (<br />)
+//    breaks:       false,        // Convert '\n' in paragraphs into <br>
+//    langPrefix:   'language-',  // CSS language prefix for fenced blocks
+//    linkify:      true,         // autoconvert URL-like texts to links
+//    typographer:  true,         // Enable smartypants and other sweet transforms
+//
+//    // options below are for demo only
+//    _highlight: true,
+//    _strict: false,
+//    _view: 'html'               // html / src / debug
+//  };
+//
+//function updateResult() {
+//    
+//  }
+
+/*
+<textarea
+    onChange={this.handleChange.bind(this)}
+    ref="textarea"
+    value={this.state.inputValue} />
+    <div>
+    	{this.state.outputValue} 
+    </div>
+</div>
+*/
 module.exports = Mark;

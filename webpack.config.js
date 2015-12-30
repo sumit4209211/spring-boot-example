@@ -10,8 +10,13 @@ module.exports = {
         filename: 'src/main/resources/static/js/bundle.js'
     },
     module: {
-    	loaders: [{
+    	loaders: [
+        {
     		test: /\.js$/, loaders: ['babel'], exclude: [/node_modules/] 
-	    }]
+	    },
+	    { 
+	    	test: /\.css$/, loader: "style-loader!css-loader" 
+	    }
+	    ]
     }
 };
