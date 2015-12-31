@@ -1,13 +1,20 @@
 /**
  * Created by wonwoo on 15. 12. 27..
  */
-var React = require('react');
-var PostsStore = require('../stores/PostsStore');
-var PostsActionCreator = require('../actions/PostsActionCreator');
+//var React = require('react');
+//var PostsStore = require('../stores/PostsStore');
+//var PostsActionCreator = require('../actions/PostsActionCreator');
+//
+//var Link = require('react-router').Link
 
-var Link = require('react-router').Link
 
-class Contents extends React.Component{
+import React, { Component } from 'react';
+import PostsStore from '../stores/PostsStore';
+import PostsActionCreator from '../actions/PostsActionCreator';
+import Router , { Link } from 'react-router';
+
+
+class Contents extends Component{
 
     constructor(props) {
         super(props);

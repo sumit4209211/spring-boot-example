@@ -1,9 +1,9 @@
 /**
  * Created by wonwoo on 15. 12. 27..
  */
-var React = require('react');
+import React, { Component } from 'react';
 
-class HeadNav extends React.Component{
+class HeadNav extends Component{
     render () {
         return (
             <nav className="navbar navbar-inverse navbar-fixed-top" role="navigation">

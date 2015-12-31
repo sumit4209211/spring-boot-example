@@ -1,13 +1,12 @@
 /**
  * Created by wonwoo on 15. 12. 27..
  */
-var React = require('react');
-var PostsStore = require('../stores/PostsStore');
-var PostsActionCreator = require('../actions/PostsActionCreator');
-var Mark = require('./Mark');
+import React, { Component } from 'react';
+import PostsStore from '../stores/PostsStore';
+import PostsActionCreator from '../actions/PostsActionCreator';
+import MarkDown from './MarkDown';
 
-
-class Content extends React.Component{
+class Content extends Component{
 
     constructor(props) {
         super(props);
@@ -40,8 +39,6 @@ class Content extends React.Component{
     }
     
     render() {
-    	console.log(this.state.post.post);
-    	console.log(this.state.post.title);
 		return (
     			<div className="col-md-8">
  					<h1>{this.state.post.title}</h1>
@@ -58,7 +55,6 @@ class Content extends React.Component{
  				<img className="img-responsive" src="http://placehold.it/900x300" alt=""/>
  				<hr>
  					<p className="lead">{this.state.post.content}</p>
- 					<Mark />
  				</hr>
  			</div>
         );

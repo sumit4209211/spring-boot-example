@@ -1,13 +1,14 @@
 /**
  * Created by wonwoo on 15. 12. 27..
  */
-var React = require('react');
-var HeadNav = require('./HeadNav');
-var Footer = require('./Footer');
-var LeftNav = require('./LeftNav');
-var Contents = require('./Contents');
+import React, { Component } from 'react';
+import HeadNav from './HeadNav';
+import Footer from './Footer';
+import RightNav from './RightNav';
+import Contents from './Contents';
 
-class BlogMain extends React.Component{
+
+class BlogMain extends Component{
     render () {
         return (
             <div>
@@ -16,7 +17,7 @@ class BlogMain extends React.Component{
                     <div className="container">
                         <div className="row">
                         	{this.props.children}
-                            <LeftNav />
+                            <RightNav />
                         </div>
                         <Footer />
                     </div>

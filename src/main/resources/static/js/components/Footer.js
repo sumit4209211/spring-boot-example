@@ -1,9 +1,9 @@
 /**
  * Created by wonwoo on 15. 12. 27..
  */
-var React = require('react');
+import React, { Component } from 'react';
 
-class Footer extends React.Component{
+class Footer extends Component{
 
     render () {
         return (

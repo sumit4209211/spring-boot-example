@@ -1,9 +1,9 @@
 /**
  * Created by wonwoo on 15. 12. 27..
  */
-var React = require('react');
+import React, { Component } from 'react';
 
-class LeftNav extends React.Component{
+class RightNav extends Component{
 
     render () {
         return (
@@ -15,7 +15,7 @@ class LeftNav extends React.Component{
     }
 }
 
-class Search extends LeftNav {
+class Search extends Component {
     render(){
         return (
             <div className="well">
@@ -33,7 +33,7 @@ class Search extends LeftNav {
     }
 }
 
-class Category extends LeftNav {
+class Category extends Component {
     render(){
         return (
             <div className="well">
@@ -70,4 +70,4 @@ class Category extends LeftNav {
 }
 
 
-module.exports = LeftNav;
+module.exports = RightNav;
