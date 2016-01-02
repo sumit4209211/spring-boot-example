@@ -1,5 +1,6 @@
 package me.wonwoo.blog.post;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -11,6 +12,7 @@ import me.wonwoo.blog.category.CategoryRepository;
 
 @Service
 @Transactional
+@Slf4j
 public class PostService {
 
 	@Autowired
@@ -24,7 +26,8 @@ public class PostService {
 	}
 	
 	public Post findOne(Long id){
-		return postRepository.findOne(id);
+		Post p = postRepository.findOne(id);
+		return p;
 	}
 
 	public Page<Post> findByCategory(Long categoryId , Pageable pageable) {

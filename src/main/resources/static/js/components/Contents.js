@@ -69,6 +69,11 @@ class Contents extends Component{
                 <h1 className="page-header">
                     Page Heading
                 </h1>
+                <ul className="pager">
+                    <li className="next">
+                        <Link className="btn btn-primary" to={`/content/`}>wirte <span className="glyphicon glyphicon-chevron-right"></span></Link>
+                    </li>
+                </ul>
                 {PostNode}
                 <ul className="pager">
                     <li className="previous">
