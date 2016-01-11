@@ -40,7 +40,7 @@ public class CategoryController {
 		return new ResponseEntity<>(category, HttpStatus.OK);
 	}
 	
-	@RequestMapping(value = "/category/", method = RequestMethod.GET)
+	@RequestMapping(value = "/category", method = RequestMethod.GET)
 	public ResponseEntity<?> getCategorys(Pageable pageable) {
 		Page<Category> categorys = categoryService.getCategorys(pageable);
 		return new ResponseEntity<>(categorys, HttpStatus.OK);
