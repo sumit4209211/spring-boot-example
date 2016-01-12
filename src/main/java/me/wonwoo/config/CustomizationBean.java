@@ -1,7 +1,8 @@
 package me.wonwoo.config;
 
-import org.springframework.boot.context.embedded.ConfigurableEmbeddedServletContainer;
 import org.springframework.boot.context.embedded.EmbeddedServletContainerCustomizer;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
 
 /**
  * 톰캣 포트 변경
@@ -9,11 +10,16 @@ import org.springframework.boot.context.embedded.EmbeddedServletContainerCustomi
  * @author wonwoo
  *
  */
-//@Component
-public class CustomizationBean implements EmbeddedServletContainerCustomizer {
+@Configuration
+public class CustomizationBean {
 
-	public void customize(ConfigurableEmbeddedServletContainer container) {
-		container.setPort(9000);
+	/**
+	 * 톰캣 포트
+	 *
+	 * @return
+	 */
+	@Bean
+	public EmbeddedServletContainerCustomizer setEmbeddedServletContainerCustomizer() {
+		return (container) -> container.setPort(8080);
 	}
-
 }

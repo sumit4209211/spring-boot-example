@@ -66,20 +66,22 @@ public class OAuth2ServerConfiguration {
 
 		@Override
 		public void configure(HttpSecurity http) throws Exception {
-//			http
-//					.requestMatcher(new OrRequestMatcher(new AntPathRequestMatcher("/")))
-//					.authorizeRequests().anyRequest().access("#oauth2.hasScope('read')");
-			
-//			  http
-//              .authorizeRequests()
-//              .antMatchers("/accounts/*").access("#oauth2.hasScope('write')")
-//              .antMatchers("/accounts").authenticated();
-//			  http
-//              .authorizeRequests()
-//              .antMatchers("/accounts/*", "/accounts").hasRole("ADMIN")
-//              .antMatchers("/posts/*"," /posts").access("#oauth2.hasScope('read')");
-			
-			http.authorizeRequests().antMatchers("/**").permitAll();
+			// http
+			// .requestMatcher(new OrRequestMatcher(new
+			// AntPathRequestMatcher("/")))
+			// .authorizeRequests().anyRequest().access("#oauth2.hasScope('read')");
+
+			http.authorizeRequests().antMatchers("/accounts/*", "/accounts").hasRole("ADMIN")
+					.antMatchers("/posts/*", " /posts").access("#oauth2.hasScope('read')");
+
+			// http.authorizeRequests().antMatchers("/accounts/*").access("#oauth2.hasScope('write')")
+			// .antMatchers("/accounts").authenticated();
+			// http.authorizeRequests().antMatchers("/accounts/*",
+			// "/accounts").hasRole("ADMIN")
+			// .antMatchers("/posts/*",
+			// "/posts").access("#oauth2.hasScope('read')");
+
+			// http.authorizeRequests().antMatchers("/**").permitAll();
 		}
 	}
 

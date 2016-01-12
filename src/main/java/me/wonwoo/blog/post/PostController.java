@@ -39,6 +39,8 @@ public class PostController {
 	@RequestMapping(value = "/post/category/{id}", method = RequestMethod.GET)
 	public ResponseEntity<?> getPostCategory(@PathVariable Long id, Pageable pageable) {
 		Page<Post> posts = postService.findByCategory(id, pageable);
+		
+		
 		return new ResponseEntity<>(posts, HttpStatus.OK);
 	}
 
@@ -53,5 +55,4 @@ public class PostController {
 		Post createPost = postService.save(post);
 		return new ResponseEntity<>(createPost, HttpStatus.OK);
 	}
-
 }

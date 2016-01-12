@@ -1,11 +1,10 @@
 package me.wonwoo.security;
 
-import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 
 import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;
 
 import me.wonwoo.blog.accounts.Accounts;
@@ -24,8 +23,6 @@ public class UserDetailsImpl extends User {
 	}
 
 	private static Collection<? extends GrantedAuthority> authorities(Accounts account) {
-		List<GrantedAuthority> authorities = new ArrayList<>();
-		authorities.add(new SimpleGrantedAuthority("ROLE_ADMIN"));
-		return authorities;
+		return Arrays.asList(() -> "ROLE_ADMIN");
 	}
 }
