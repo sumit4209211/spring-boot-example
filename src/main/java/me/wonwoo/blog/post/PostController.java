@@ -5,6 +5,7 @@ import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.repository.query.Param;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
@@ -19,24 +20,33 @@ import me.wonwoo.exception.BadRequestException;
 
 @Slf4j
 @RestController
+@RequestMapping("/post")
 public class PostController {
 
 	@Autowired
 	private PostService postService;
 	
-	@RequestMapping(value = "/post/{id}", method = RequestMethod.GET)
+	@RequestMapping(value = "/{id}", method = RequestMethod.GET)
 	public ResponseEntity<?> getPost(@PathVariable Long id) {
 		Post post = postService.findOne(id);
 		return new ResponseEntity<>(post, HttpStatus.OK);
 	}
+
 	
-	@RequestMapping(value = "/post", method = RequestMethod.GET)
+	@RequestMapping(value = "/", method = RequestMethod.GET)
 	public ResponseEntity<?> getPosts(Pageable pageable) {
-		Page<Post> post = postService.findAll(pageable);
-		return new ResponseEntity<>(post, HttpStatus.OK);
+		Page<Post> posts = postService.findAll(pageable);
+		return new ResponseEntity<>(posts, HttpStatus.OK);
 	}
+
+	@RequestMapping(value = "/search/", method = RequestMethod.GET)
+	public ResponseEntity<?> getSearchPosts(Pageable pageable, @Param("title") String title) {
+		Page<Post> posts = postService.findByTitleStartingWith(title, pageable);
+		return new ResponseEntity<>(posts, HttpStatus.OK);
+	}
+
 	
-	@RequestMapping(value = "/post/category/{id}", method = RequestMethod.GET)
+	@RequestMapping(value = "/category/{id}", method = RequestMethod.GET)
 	public ResponseEntity<?> getPostCategory(@PathVariable Long id, Pageable pageable) {
 		Page<Post> posts = postService.findByCategory(id, pageable);
 		
@@ -44,7 +54,7 @@ public class PostController {
 		return new ResponseEntity<>(posts, HttpStatus.OK);
 	}
 
-	@RequestMapping(value = "/post", method = RequestMethod.POST)
+	@RequestMapping(value = "/", method = RequestMethod.POST)
 	public ResponseEntity<?> createPost(@RequestBody @Valid Post post, BindingResult result) {
 		if (result.hasErrors()) {
 			log.debug("field : {} message : {} ", result.getFieldError().getField(),
@@ -56,3 +66,4 @@ public class PostController {
 		return new ResponseEntity<>(createPost, HttpStatus.OK);
 	}
 }
+

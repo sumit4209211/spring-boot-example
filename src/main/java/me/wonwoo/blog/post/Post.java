@@ -2,14 +2,7 @@ package me.wonwoo.blog.post;
 
 import java.util.Date;
 
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
+import javax.persistence.*;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -27,6 +20,8 @@ public class Post {
 	private Long id;
 
 	private String title;
+
+	@Column(columnDefinition="TEXT")
 	private String content;
 
 	@Temporal(TemporalType.TIMESTAMP)
