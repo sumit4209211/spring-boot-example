@@ -23,10 +23,10 @@ spring.jpa.properties.hibernate.dialect: org.hibernate.dialect.MySQL5Dialect
 spring.social.facebook.appId: 123123123123
 spring.social.facebook.appSecret: 12354444
 
-spring.redis.host: aoruqjfu.fun25.co.kr
-spring.redis.port: 18808
+#spring.redis.host: aoruqjfu.fun25.co.kr
+#spring.redis.port: 18808
 
 
-server.context-path: /v1
+server.context-path: /v1/
 #management.context-path: /manage
 #management.port: 8081
