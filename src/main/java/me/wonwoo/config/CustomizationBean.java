@@ -1,15 +1,12 @@
 package me.wonwoo.config;
 
+import org.springframework.boot.actuate.health.Health;
+import org.springframework.boot.actuate.health.HealthIndicator;
 import org.springframework.boot.context.embedded.EmbeddedServletContainerCustomizer;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-/**
- * 톰캣 포트 변경
- * 
- * @author wonwoo
- *
- */
+
 @Configuration
 public class CustomizationBean {
 
@@ -20,6 +17,11 @@ public class CustomizationBean {
 	 */
 	@Bean
 	public EmbeddedServletContainerCustomizer setEmbeddedServletContainerCustomizer() {
-		return (container) -> container.setPort(8888);
+		return (container) -> container.setPort(8080);
+	}
+
+	@Bean
+	public HealthIndicator healthIndicator(){
+		return ()-> Health.status("I <3 SFJUG!").build();
 	}
 }
