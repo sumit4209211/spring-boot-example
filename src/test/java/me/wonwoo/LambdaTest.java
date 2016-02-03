@@ -3,15 +3,19 @@ package me.wonwoo;
 import me.wonwoo.function.FunctionIntegertoString;
 import me.wonwoo.function.FunctionStringtoInteger;
 import org.junit.Test;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import static java.util.stream.Collectors.joining;
 import static java.util.stream.Collectors.toList;
@@ -85,13 +89,27 @@ public class LambdaTest {
 
         System.out.println(collect);
 
+
+        List<Integer> numbers1 = Arrays.asList(1, 2, 3, 4, 5);
+
+        int[] t = new int[] { 2 };
+
+        Stream<Integer> integerStream = numbers1.stream().map(i -> i * t[0]);
+
+        t[0] = 10;
+
+        integerStream.forEach(System.out::println);
+
+
+
+
+
 //
 //        final List<Integer> collect = predicateTest1(i -> i > 3, numbers).stream().collect(toList());
 //        System.out.println(collect);
 
 
     }
-
 
     private Item produceUser() {
         return new Item("1");
