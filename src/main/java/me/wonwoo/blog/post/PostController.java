@@ -33,7 +33,7 @@ public class PostController {
 	}
 
 	
-	@RequestMapping(value = "/", method = RequestMethod.GET)
+	@RequestMapping(value = {"/" , ""}, method = RequestMethod.GET)
 	public ResponseEntity<?> getPosts(Pageable pageable) {
 		Page<Post> posts = postService.findAll(pageable);
 		return new ResponseEntity<>(posts, HttpStatus.OK);
