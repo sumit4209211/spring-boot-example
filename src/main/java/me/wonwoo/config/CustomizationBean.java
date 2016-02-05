@@ -17,7 +17,7 @@ public class CustomizationBean {
 	 */
 	@Bean
 	public EmbeddedServletContainerCustomizer setEmbeddedServletContainerCustomizer() {
-		return (container) -> container.setPort(8081);
+		return (container) -> container.setPort(8080);
 	}
 
 	@Bean
