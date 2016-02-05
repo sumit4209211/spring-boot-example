@@ -15,10 +15,10 @@ public class CustomizationBean {
 	 *
 	 * @return
 	 */
-	@Bean
-	public EmbeddedServletContainerCustomizer setEmbeddedServletContainerCustomizer() {
-		return (container) -> container.setPort(8080);
-	}
+//	@Bean
+//	public EmbeddedServletContainerCustomizer setEmbeddedServletContainerCustomizer() {
+//		return (container) -> container.setPort(8080);
+//	}
 
 	@Bean
 	public HealthIndicator healthIndicator(){
