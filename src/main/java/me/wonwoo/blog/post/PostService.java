@@ -9,6 +9,7 @@ import org.springframework.transaction.annotation.Transactional;
 import lombok.extern.slf4j.Slf4j;
 import me.wonwoo.blog.category.Category;
 import me.wonwoo.blog.category.CategoryRepository;
+import org.springframework.web.servlet.DispatcherServlet;
 
 @Service
 @Transactional

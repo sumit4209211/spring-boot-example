@@ -9,11 +9,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import lombok.extern.slf4j.Slf4j;
 import me.wonwoo.exception.BadRequestException;
@@ -27,43 +23,42 @@ public class PostController {
 	private PostService postService;
 	
 	@RequestMapping(value = "/{id}", method = RequestMethod.GET)
-	public ResponseEntity<?> getPost(@PathVariable Long id) {
-		Post post = postService.findOne(id);
-		return new ResponseEntity<>(post, HttpStatus.OK);
+	@ResponseStatus(HttpStatus.OK)
+	public Post getPost(@PathVariable Long id) {
+		return postService.findOne(id);
 	}
 
 	
 	@RequestMapping(value = {"/" , ""}, method = RequestMethod.GET)
-	public ResponseEntity<?> getPosts(Pageable pageable) {
-		Page<Post> posts = postService.findAll(pageable);
-		return new ResponseEntity<>(posts, HttpStatus.OK);
+	@ResponseStatus(HttpStatus.OK)
+	public Page<Post> getPosts(Pageable pageable) {
+		return postService.findAll(pageable);
 	}
 
 	@RequestMapping(value = "/search/", method = RequestMethod.GET)
-	public ResponseEntity<?> getSearchPosts(Pageable pageable, @Param("title") String title) {
+	@ResponseStatus(HttpStatus.OK)
+	public Page<Post> getSearchPosts(Pageable pageable, @Param("title") String title) {
 		Page<Post> posts = postService.findByTitleStartingWith(title, pageable);
-		return new ResponseEntity<>(posts, HttpStatus.OK);
+		return posts;
 	}
 
 	
 	@RequestMapping(value = "/category/{id}", method = RequestMethod.GET)
-	public ResponseEntity<?> getPostCategory(@PathVariable Long id, Pageable pageable) {
-		Page<Post> posts = postService.findByCategory(id, pageable);
-		
-		
-		return new ResponseEntity<>(posts, HttpStatus.OK);
+	@ResponseStatus(HttpStatus.OK)
+	public Page<Post> getPostCategory(@PathVariable Long id, Pageable pageable) {
+		return postService.findByCategory(id, pageable);
 	}
 
 	@RequestMapping(value = "/", method = RequestMethod.POST)
-	public ResponseEntity<?> createPost(@RequestBody @Valid Post post, BindingResult result) {
+	@ResponseStatus(HttpStatus.CREATED)
+	public Post createPost(@RequestBody @Valid Post post, BindingResult result) {
 		if (result.hasErrors()) {
 			log.debug("field : {} message : {} ", result.getFieldError().getField(),
 					result.getFieldError().getDefaultMessage());
 			throw new BadRequestException(result.getFieldError().getField(),
 					result.getFieldError().getDefaultMessage());
 		}
-		Post createPost = postService.save(post);
-		return new ResponseEntity<>(createPost, HttpStatus.OK);
+		return postService.save(post);
 	}
 }
 

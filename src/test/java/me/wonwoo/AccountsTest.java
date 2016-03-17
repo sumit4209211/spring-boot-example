@@ -6,8 +6,10 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 import org.junit.Before;
+import org.junit.FixMethodOrder;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.junit.runners.MethodSorters;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.SpringApplicationConfiguration;
 import org.springframework.http.MediaType;
@@ -31,6 +33,7 @@ import me.wonwoo.config.oauth2.AccessToken;
 @SpringApplicationConfiguration(classes = Application.class)
 @WebAppConfiguration
 @Transactional
+@FixMethodOrder(MethodSorters.JVM)
 public class AccountsTest {
 
 	@Autowired
@@ -100,7 +103,7 @@ public class AccountsTest {
 		accounts.setLast_name("lee");
 		accounts.setPassword("wonwoo123");
 		ResultActions createResult = createAccount(accounts);
-		createResult.andExpect(status().isOk());
+		createResult.andExpect(status().isCreated());
 	}
 
 	@Test
@@ -129,7 +132,7 @@ public class AccountsTest {
 		ResultActions deleteResult = mockMvc.perform(delete("/accounts/1")
 				.header("Authorization", "Bearer " + accessToken).contentType(MediaType.APPLICATION_JSON));
 		deleteResult.andDo(print());
-		deleteResult.andExpect(status().isOk());
+		deleteResult.andExpect(status().isNoContent());
 	}
 
 	@Test

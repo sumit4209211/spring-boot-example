@@ -1,61 +1,59 @@
 package me.wonwoo.blog.category;
 
-import javax.validation.Valid;
-
+import lombok.extern.slf4j.Slf4j;
+import me.wonwoo.exception.BadRequestException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.*;
 
-import lombok.extern.slf4j.Slf4j;
-import me.wonwoo.exception.BadRequestException;
+import javax.validation.Valid;
 
-@Controller
+@RestController
 @Slf4j
 public class CategoryController {
 	
 	@Autowired
 	private CategoryService categoryService;
 
-	@RequestMapping(value = "/category", method = RequestMethod.POST)
-	public ResponseEntity<?> createCategory(@RequestBody @Valid Category category, BindingResult result) {
-		if (result.hasErrors()) {
-			fieldError(result);
-		}
-		Category createCategory = categoryService.save(category);
-		return new ResponseEntity<>(createCategory, HttpStatus.OK);
-	}
+
 	
 	@RequestMapping(value = "/category/{id}", method = RequestMethod.GET)
-	public ResponseEntity<?> getCategory(@PathVariable Long id) {
-		Category category = categoryService.getCategory(id);
-		return new ResponseEntity<>(category, HttpStatus.OK);
+	@ResponseStatus(HttpStatus.OK)
+	public Category getCategory(@PathVariable Long id) {
+		return categoryService.getCategory(id);
 	}
 	
 	@RequestMapping(value = "/category", method = RequestMethod.GET)
-	public ResponseEntity<?> getCategorys(Pageable pageable) {
+	@ResponseStatus(HttpStatus.OK)
+	public Page<Category> getCategorys(Pageable pageable) {
 		Page<Category> categorys = categoryService.getCategorys(pageable);
-		return new ResponseEntity<>(categorys, HttpStatus.OK);
+		return categorys;
+	}
+
+	@RequestMapping(value = "/category", method = RequestMethod.POST)
+	@ResponseStatus(HttpStatus.CREATED)
+	public Category createCategory(@RequestBody @Valid Category category, BindingResult result) {
+		if (result.hasErrors()) {
+			fieldError(result);
+		}
+		return categoryService.save(category);
 	}
 	
 	@RequestMapping(value = "/category/{id}", method = RequestMethod.PUT)
-	public ResponseEntity<?> updateCategory(@PathVariable Long id, Category category) {
-		Category updateCategory = categoryService.updateCategory(id,category);
-		return new ResponseEntity<>(updateCategory, HttpStatus.OK);
+	@ResponseStatus(HttpStatus.OK)
+	public Category updateCategory(@PathVariable Long id, Category category) {
+		return categoryService.updateCategory(id,category);
 	}
 	
 	@RequestMapping(value = "/category/{id}", method = RequestMethod.DELETE)
-	public ResponseEntity<?> deleteCategory(@PathVariable Long id) {
+	@ResponseStatus(HttpStatus.NO_CONTENT)
+	public void deleteCategory(@PathVariable Long id) {
 		categoryService.deleteCategory(id);
-		return new ResponseEntity<>(HttpStatus.OK);
 	}
 	
 	private void fieldError(BindingResult result) {

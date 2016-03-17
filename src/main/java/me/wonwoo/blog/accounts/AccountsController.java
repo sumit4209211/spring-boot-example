@@ -10,11 +10,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import lombok.extern.slf4j.Slf4j;
 import me.wonwoo.exception.BadRequestException;
@@ -30,44 +26,44 @@ public class AccountsController {
 	private AccountsService service;
 
 	@RequestMapping(value = "/accounts/{id}", method = RequestMethod.GET)
-	public ResponseEntity<?> getAccount(@PathVariable @Valid Long id) {
+	@ResponseStatus(HttpStatus.OK)
+	public Accounts getAccount(@PathVariable @Valid Long id) {
 		Accounts accounts = service.getAccount(id);
 		log.debug("accounts : {} ", accounts);
-		return new ResponseEntity<>(accounts, HttpStatus.OK);
+		return accounts;
 	}
 
 	@RequestMapping(value = "/accounts", method = RequestMethod.GET)
-	public ResponseEntity<?> getAccounts(Pageable pageable) {
+	@ResponseStatus(HttpStatus.OK)
+	public Page<Accounts> getAccounts(Pageable pageable) {
 		Page<Accounts> accounts = service.getAccounts(pageable);
 		log.debug("accounts : {} ", accounts);
-		return new ResponseEntity<>(accounts, HttpStatus.OK);
+		return accounts;
 	}
 
 	@RequestMapping(value = "/accounts", method = RequestMethod.POST)
-	public ResponseEntity<?> saveAccounts(@RequestBody @Valid Accounts accounts, BindingResult result) {
+	@ResponseStatus(HttpStatus.CREATED)
+	public Accounts saveAccounts(@RequestBody @Valid Accounts accounts, BindingResult result) {
 		if (result.hasErrors()) {
 			fieldError(result);
 		}
-		Accounts saveAccounts = service.saveAccounts(accounts);
-		return new ResponseEntity<>(saveAccounts, HttpStatus.OK);
+		return service.saveAccounts(accounts);
 	}
 
 	@RequestMapping(value = "/accounts/{id}", method = RequestMethod.PUT)
-	public ResponseEntity<?> updateAccounts(@PathVariable Long id, @RequestBody @Valid Accounts accounts,
+	@ResponseStatus(HttpStatus.OK)
+	public Accounts updateAccounts(@PathVariable Long id, @RequestBody @Valid Accounts accounts,
 			BindingResult result) {
 		if (result.hasErrors()) {
 			fieldError(result);
 		}
-		Accounts updateAccounts = service.updateAccounts(id, accounts);
-		return new ResponseEntity<>(updateAccounts, HttpStatus.OK);
+		return service.updateAccounts(id, accounts);
 	}
 
 	@RequestMapping(value = "/accounts/{id}", method = RequestMethod.DELETE)
-	public ResponseEntity<?> deleteAccounts(@PathVariable Long id) {
-		Accounts deleteAccount = new Accounts();
+	@ResponseStatus(HttpStatus.NO_CONTENT)
+	public void deleteAccounts(@PathVariable Long id) {
 		service.deleteAccounts(id);
-		deleteAccount.setId(id);
-		return new ResponseEntity<>(deleteAccount, HttpStatus.OK);
 	}
 
 	private void fieldError(BindingResult result) {

@@ -34,21 +34,21 @@ public class ConfigMvc {
 	// };
 	// }
 
-	@Bean
-	public ErrorAttributes errorAttributes() {
-		return new DefaultErrorAttributes() {
-			@Override
-			public Map<String, Object> getErrorAttributes(RequestAttributes requestAttributes,
-					boolean includeStackTrace) {
-				Map<String, Object> errorAttributes = super.getErrorAttributes(requestAttributes, includeStackTrace);
-				// BasicErrorController
-				// Customize the default entries in errorAttributes to suit your
-				// needs
-				return errorAttributes;
-			}
-
-		};
-	}
+//	@Bean
+//	public ErrorAttributes errorAttributes() {
+//		return new DefaultErrorAttributes() {
+//			@Override
+//			public Map<String, Object> getErrorAttributes(RequestAttributes requestAttributes,
+//					boolean includeStackTrace) {
+//				Map<String, Object> errorAttributes = super.getErrorAttributes(requestAttributes, includeStackTrace);
+//				// BasicErrorController
+//				// Customize the default entries in errorAttributes to suit your
+//				// needs
+//				return errorAttributes;
+//			}
+//
+//		};
+//	}
 
 	/**
 	 * 패스워드 인코딩

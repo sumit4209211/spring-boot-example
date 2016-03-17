@@ -6,8 +6,10 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 import org.junit.Before;
+import org.junit.FixMethodOrder;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.junit.runners.MethodSorters;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.SpringApplicationConfiguration;
 import org.springframework.http.MediaType;
@@ -32,6 +34,7 @@ import me.wonwoo.config.oauth2.AccessToken;
 @SpringApplicationConfiguration(classes = Application.class)
 @WebAppConfiguration
 @Transactional
+@FixMethodOrder(MethodSorters.JVM)
 public class CategoryTest {
 
 	@Autowired
@@ -76,18 +79,17 @@ public class CategoryTest {
 	}
 	
 	@Test
-	public void categoryCreateTest() throws JsonProcessingException, Exception{
+	public void categoryCreateTest() throws Exception{
 		Category category = new Category();
 		category.setName("카테고리");
 		ResultActions createResult = mockMvc.perform(post("/category").header("Authorization", "Bearer " + accessToken)
 				.contentType(MediaType.APPLICATION_JSON).content(objectMapper.writeValueAsString(category)));
 		createResult.andDo(print());
-		createResult.andExpect(status().isOk());
+		createResult.andExpect(status().isCreated());
 	}
 	
 	@Test
-	public void getCategoryTest() throws JsonProcessingException, Exception{
-		categoryCreateTest();
+	public void getCategoryTest() throws Exception{
 		ResultActions createResult = mockMvc.perform(get("/category/1").header("Authorization", "Bearer " + accessToken)
 				.contentType(MediaType.APPLICATION_JSON));
 		createResult.andDo(print());
